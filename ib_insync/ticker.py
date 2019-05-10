@@ -102,7 +102,7 @@ class Ticker(Object):
         """
         price = self.last
         if isNan(price):
-            price = (self.bid + self.ask) / 2
+            price = (self.bid + self.ask) * 0.5
         if isNan(price):
             price = self.close
         return price
