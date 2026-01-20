@@ -45,7 +45,7 @@ Installation
 
 Requirements:
 
-* Python 3.6 or higher;
+* Python 3.14 or higher;
 * A running TWS or IB Gateway application (version 1023 or higher).
   Make sure the
   `API port is enabled <https://interactivebrokers.github.io/tws-api/initial_setup.html>`_
@@ -61,7 +61,6 @@ This is a complete script to download historical data:
 .. code-block:: python
 
     from ib_insync import *
-    # util.startLoop()  # uncomment this line when in a notebook
 
     ib = IB()
     ib.connect('127.0.0.1', 7497, clientId=1)
@@ -125,7 +124,7 @@ Good luck and enjoy,
    :alt: Conda
    :target: https://anaconda.org/conda-forge/ib-insync
 
-.. |PyVersion| image:: https://img.shields.io/badge/python-3.6+-blue.svg
+.. |PyVersion| image:: https://img.shields.io/badge/python-3.14+-blue.svg
    :alt:
 
 .. |Status| image:: https://img.shields.io/badge/status-beta-green.svg

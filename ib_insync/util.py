@@ -8,15 +8,11 @@ import signal
 import sys
 import time
 from dataclasses import fields, is_dataclass
-from typing import (
-    AsyncIterator, Awaitable, Callable, Iterator, List, Optional, Union)
+from typing import AsyncIterator, Awaitable, Callable, Iterator, List, Optional, Union
 
 import eventkit as ev
 
-try:
-    from zoneinfo import ZoneInfo
-except ImportError:
-    from backports.zoneinfo import ZoneInfo  # type: ignore
+from zoneinfo import ZoneInfo
 
 
 globalErrorEvent = ev.Event()
@@ -312,10 +308,7 @@ def run(*awaitables: Awaitable, timeout: Optional[float] = None):
             return
         loop.run_forever()
         result = None
-        if sys.version_info >= (3, 7):
-            all_tasks = asyncio.all_tasks(loop)  # type: ignore
-        else:
-            all_tasks = asyncio.Task.all_tasks()  # type: ignore
+        all_tasks = asyncio.all_tasks(loop)
         if all_tasks:
             # cancel pending tasks
             f = asyncio.gather(*all_tasks)
@@ -453,20 +446,9 @@ async def waitUntilAsync(t: Time_t) -> bool:
     return True
 
 
-def patchAsyncio():
-    """Patch asyncio to allow nested event loops."""
-    import nest_asyncio
-    nest_asyncio.apply()
-
-
 def getLoop():
     """Get the asyncio event loop for the current thread."""
     return asyncio.get_event_loop_policy().get_event_loop()
-
-
-def startLoop():
-    """Use nested asyncio event loop for Jupyter notebooks."""
-    patchAsyncio()
 
 
 def useQt(qtLib: str = 'PyQt5', period: float = 0.01):

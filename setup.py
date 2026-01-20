@@ -5,8 +5,8 @@ from pathlib import Path
 
 from setuptools import setup
 
-if sys.version_info < (3, 6, 0):
-    raise RuntimeError("ib_insync requires Python 3.6 or higher")
+if sys.version_info < (3, 14, 0):
+    raise RuntimeError("ib_insync requires Python 3.14 or higher")
 
 here = Path(__file__).parent.resolve()
 
@@ -26,26 +26,18 @@ setup(
     author='Ewald R. de Wit',
     author_email='ewald.de.wit@gmail.com',
     license='BSD',
-    python_requires='>=3.6',
+    python_requires='>=3.14',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Topic :: Office/Business :: Financial :: Investment',
         'License :: OSI Approved :: BSD License',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11',
-        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.14',
         'Programming Language :: Python :: 3 :: Only',
     ],
     keywords='ibapi tws asyncio jupyter interactive brokers async',
     packages=['ib_insync'],
     package_data={'ib_insync': ['py.typed']},
-    install_requires=['eventkit', 'nest_asyncio',
-                      'dataclasses;python_version<"3.7"',
-                      'backports.zoneinfo;python_version<"3.9"'],
+    install_requires=['eventkit'],
     setup_requires=['flake8']
 )
