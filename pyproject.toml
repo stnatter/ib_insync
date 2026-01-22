@@ -24,7 +24,7 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
 ]
 dependencies = [
-    "eventkit",
+    "eventkit @ git+https://github.com/stnatter/eventkit.git",
     "nest_asyncio",
 ]
 
@@ -38,9 +38,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/erdewit/ib_insync"
-Repository = "https://github.com/erdewit/ib_insync"
-Issues = "https://github.com/erdewit/ib_insync/issues"
+Homepage = "https://github.com/stnatter/ib_insync"
+Repository = "https://github.com/stnatter/ib_insync"
+Issues = "https://github.com/stnatter/ib_insync/issues"
 
 [tool.setuptools]
 packages = ["ib_insync"]
