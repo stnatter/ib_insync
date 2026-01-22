@@ -75,7 +75,7 @@ class Window(qt.QWidget):
             contract = eval(text)
             if (contract and self.ib.qualifyContracts(contract)
                     and contract not in self.table):
-                ticker = self.ib.reqMktData(contract, '', False, False, None)
+                ticker = self.ib.reqMktData(contract, '', False, False, [])
                 self.table.addTicker(ticker)
             self.edit.setText(text)
 
@@ -100,7 +100,6 @@ class Window(qt.QWidget):
 
 
 if __name__ == '__main__':
-    util.patchAsyncio()
     util.useQt()
     # util.useQt('PySide6')
     window = Window('127.0.0.1', 7497, 1)

@@ -1,7 +1,7 @@
 """Order types used by Interactive Brokers."""
 
 from dataclasses import dataclass, field
-from typing import ClassVar, FrozenSet, List, NamedTuple
+from typing import ClassVar, NamedTuple
 
 from eventkit import Event
 
@@ -105,15 +105,15 @@ class Order:
     clearingAccount: str = ''
     clearingIntent: str = ''
     algoStrategy: str = ''
-    algoParams: List[TagValue] = field(default_factory=list)
-    smartComboRoutingParams: List[TagValue] = field(default_factory=list)
+    algoParams: list[TagValue] = field(default_factory=list)
+    smartComboRoutingParams: list[TagValue] = field(default_factory=list)
     algoId: str = ''
     whatIf: bool = False
     notHeld: bool = False
     solicited: bool = False
     modelCode: str = ''
-    orderComboLegs: List['OrderComboLeg'] = field(default_factory=list)
-    orderMiscOptions: List[TagValue] = field(default_factory=list)
+    orderComboLegs: list['OrderComboLeg'] = field(default_factory=list)
+    orderMiscOptions: list[TagValue] = field(default_factory=list)
     referenceContractId: int = 0
     peggedChangeAmount: float = 0.0
     isPeggedChangeAmountDecrease: bool = False
@@ -126,7 +126,7 @@ class Order:
     adjustedTrailingAmount: float = UNSET_DOUBLE
     adjustableTrailingUnit: int = 0
     lmtPriceOffset: float = UNSET_DOUBLE
-    conditions: List['OrderCondition'] = field(default_factory=list)
+    conditions: list['OrderCondition'] = field(default_factory=list)
     conditionsCancelOrder: bool = False
     conditionsIgnoreRth: bool = False
     extOperator: str = ''
@@ -214,7 +214,7 @@ class StopLimitOrder(Order):
             auxPrice=stopPrice, **kwargs)
 
 
-@dataclass
+@dataclass(slots=True)
 class OrderStatus:
     orderId: int = 0
     status: str = ''
@@ -238,13 +238,13 @@ class OrderStatus:
     Filled: ClassVar[str] = 'Filled'
     Inactive: ClassVar[str] = 'Inactive'
 
-    DoneStates: ClassVar[FrozenSet[str]] = frozenset(
+    DoneStates: ClassVar[frozenset[str]] = frozenset(
         ['Filled', 'Cancelled', 'ApiCancelled'])
-    ActiveStates: ClassVar[FrozenSet[str]] = frozenset(
+    ActiveStates: ClassVar[frozenset[str]] = frozenset(
         ['PendingSubmit', 'ApiPending', 'PreSubmitted', 'Submitted'])
 
 
-@dataclass
+@dataclass(slots=True)
 class OrderState:
     status: str = ''
     initMarginBefore: str = ''
@@ -265,7 +265,7 @@ class OrderState:
     completedStatus: str = ''
 
 
-@dataclass
+@dataclass(slots=True)
 class OrderComboLeg:
     price: float = UNSET_DOUBLE
 
@@ -289,8 +289,8 @@ class Trade:
     contract: Contract = field(default_factory=Contract)
     order: Order = field(default_factory=Order)
     orderStatus: 'OrderStatus' = field(default_factory=OrderStatus)
-    fills: List[Fill] = field(default_factory=list)
-    log: List[TradeLogEntry] = field(default_factory=list)
+    fills: list[Fill] = field(default_factory=list)
+    log: list[TradeLogEntry] = field(default_factory=list)
     advancedError: str = ''
 
     events: ClassVar = (
@@ -357,7 +357,7 @@ class OrderCondition:
         return self
 
 
-@dataclass
+@dataclass(slots=True)
 class PriceCondition(OrderCondition):
     condType: int = 1
     conjunction: str = 'a'
@@ -368,7 +368,7 @@ class PriceCondition(OrderCondition):
     triggerMethod: int = 0
 
 
-@dataclass
+@dataclass(slots=True)
 class TimeCondition(OrderCondition):
     condType: int = 3
     conjunction: str = 'a'
@@ -376,7 +376,7 @@ class TimeCondition(OrderCondition):
     time: str = ''
 
 
-@dataclass
+@dataclass(slots=True)
 class MarginCondition(OrderCondition):
     condType: int = 4
     conjunction: str = 'a'
@@ -384,7 +384,7 @@ class MarginCondition(OrderCondition):
     percent: int = 0
 
 
-@dataclass
+@dataclass(slots=True)
 class ExecutionCondition(OrderCondition):
     condType: int = 5
     conjunction: str = 'a'
@@ -393,7 +393,7 @@ class ExecutionCondition(OrderCondition):
     symbol: str = ''
 
 
-@dataclass
+@dataclass(slots=True)
 class VolumeCondition(OrderCondition):
     condType: int = 6
     conjunction: str = 'a'
@@ -403,7 +403,7 @@ class VolumeCondition(OrderCondition):
     exch: str = ''
 
 
-@dataclass
+@dataclass(slots=True)
 class PercentChangeCondition(OrderCondition):
     condType: int = 7
     conjunction: str = 'a'

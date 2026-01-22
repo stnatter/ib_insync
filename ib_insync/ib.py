@@ -5,7 +5,7 @@ import copy
 import datetime
 import logging
 import time
-from typing import Awaitable, Dict, Iterator, List, Optional, Union
+from collections.abc import Awaitable, Iterator
 
 from eventkit import Event
 
@@ -387,11 +387,11 @@ class IB:
         """
         self.wrapper.setTimeout(timeout)
 
-    def managedAccounts(self) -> List[str]:
+    def managedAccounts(self) -> list[str]:
         """List of account names."""
         return list(self.wrapper.accounts)
 
-    def accountValues(self, account: str = '') -> List[AccountValue]:
+    def accountValues(self, account: str = '') -> list[AccountValue]:
         """
         List of account values for the given account,
         or of all accounts if account is left blank.
@@ -405,7 +405,7 @@ class IB:
         else:
             return list(self.wrapper.accountValues.values())
 
-    def accountSummary(self, account: str = '') -> List[AccountValue]:
+    def accountSummary(self, account: str = '') -> list[AccountValue]:
         """
         List of account values for the given account,
         or of all accounts if account is left blank.
@@ -417,7 +417,7 @@ class IB:
         """
         return self._run(self.accountSummaryAsync(account))
 
-    def portfolio(self, account: str = '') -> List[PortfolioItem]:
+    def portfolio(self, account: str = '') -> list[PortfolioItem]:
         """
         List of portfolio items for the given account,
         or of all retrieved portfolio items if account is left blank.
@@ -431,7 +431,7 @@ class IB:
             return [v for d in self.wrapper.portfolio.values()
                     for v in d.values()]
 
-    def positions(self, account: str = '') -> List[Position]:
+    def positions(self, account: str = '') -> list[Position]:
         """
         List of positions for the given account,
         or of all accounts if account is left blank.
@@ -445,7 +445,7 @@ class IB:
             return [v for d in self.wrapper.positions.values()
                     for v in d.values()]
 
-    def pnl(self, account='', modelCode='') -> List[PnL]:
+    def pnl(self, account='', modelCode='') -> list[PnL]:
         """
         List of subscribed :class:`.PnL` objects (profit and loss),
         optionally filtered by account and/or modelCode.
@@ -462,7 +462,7 @@ class IB:
 
     def pnlSingle(
             self, account: str = '', modelCode: str = '',
-            conId: int = 0) -> List[PnLSingle]:
+            conId: int = 0) -> list[PnLSingle]:
         """
         List of subscribed :class:`.PnLSingle` objects (profit and loss for
         single positions).
@@ -479,34 +479,34 @@ class IB:
                 and (not modelCode or v.modelCode == modelCode)
                 and (not conId or v.conId == conId)]
 
-    def trades(self) -> List[Trade]:
+    def trades(self) -> list[Trade]:
         """List of all order trades from this session."""
         return list(self.wrapper.trades.values())
 
-    def openTrades(self) -> List[Trade]:
+    def openTrades(self) -> list[Trade]:
         """List of all open order trades."""
         return [v for v in self.wrapper.trades.values()
                 if v.orderStatus.status not in OrderStatus.DoneStates]
 
-    def orders(self) -> List[Order]:
+    def orders(self) -> list[Order]:
         """List of all orders from this session."""
         return list(
             trade.order for trade in self.wrapper.trades.values())
 
-    def openOrders(self) -> List[Order]:
+    def openOrders(self) -> list[Order]:
         """List of all open orders."""
         return [trade.order for trade in self.wrapper.trades.values()
                 if trade.orderStatus.status not in OrderStatus.DoneStates]
 
-    def fills(self) -> List[Fill]:
+    def fills(self) -> list[Fill]:
         """List of all fills from this session."""
         return list(self.wrapper.fills.values())
 
-    def executions(self) -> List[Execution]:
+    def executions(self) -> list[Execution]:
         """List of all executions from this session."""
         return list(fill.execution for fill in self.wrapper.fills.values())
 
-    def ticker(self, contract: Contract) -> Optional[Ticker]:
+    def ticker(self, contract: Contract) -> Ticker | None:
         """
         Get ticker of the given contract. It must have been requested before
         with reqMktData with the same contract object. The ticker may not be
@@ -517,35 +517,35 @@ class IB:
         """
         return self.wrapper.tickers.get(id(contract))
 
-    def tickers(self) -> List[Ticker]:
+    def tickers(self) -> list[Ticker]:
         """Get a list of all tickers."""
         return list(self.wrapper.tickers.values())
 
-    def pendingTickers(self) -> List[Ticker]:
+    def pendingTickers(self) -> list[Ticker]:
         """Get a list of all tickers that have pending ticks or domTicks."""
         return list(self.wrapper.pendingTickers)
 
-    def realtimeBars(self) -> List[Union[BarDataList, RealTimeBarList]]:
+    def realtimeBars(self) -> list[BarDataList | RealTimeBarList]:
         """
         Get a list of all live updated bars. These can be 5 second realtime
         bars or live updated historical bars.
         """
         return list(self.wrapper.reqId2Subscriber.values())
 
-    def newsTicks(self) -> List[NewsTick]:
+    def newsTicks(self) -> list[NewsTick]:
         """
         List of ticks with headline news.
         The article itself can be retrieved with :meth:`.reqNewsArticle`.
         """
         return self.wrapper.newsTicks
 
-    def newsBulletins(self) -> List[NewsBulletin]:
+    def newsBulletins(self) -> list[NewsBulletin]:
         """List of IB news bulletins."""
         return list(self.wrapper.msgId2NewsBulletin.values())
 
     def reqTickers(
             self, *contracts: Contract,
-            regulatorySnapshot: bool = False) -> List[Ticker]:
+            regulatorySnapshot: bool = False) -> list[Ticker]:
         """
         Request and return a list of snapshot tickers.
         The list is returned when all tickers are ready.
@@ -560,7 +560,7 @@ class IB:
             self.reqTickersAsync(
                 *contracts, regulatorySnapshot=regulatorySnapshot))
 
-    def qualifyContracts(self, *contracts: Contract) -> List[Contract]:
+    def qualifyContracts(self, *contracts: Contract) -> list[Contract]:
         """
         Fully qualify the given contracts in-place. This will fill in
         the missing fields in the contract, especially the conId.
@@ -619,7 +619,7 @@ class IB:
 
     @staticmethod
     def oneCancelsAll(
-            orders: List[Order], ocaGroup: str, ocaType: int) -> List[Order]:
+            orders: list[Order], ocaGroup: str, ocaType: int) -> list[Order]:
         """
         Place the trades in the same One Cancels All (OCA) group.
 
@@ -684,7 +684,7 @@ class IB:
         return trade
 
     def cancelOrder(self, order: Order, manualCancelOrderTime: str = '') \
-            -> Optional[Trade]:
+            -> Trade | None:
         """
         Cancel the order and return the Trade it belongs to.
 
@@ -792,7 +792,7 @@ class IB:
         """
         self.client.reqAutoOpenOrders(autoBind)
 
-    def reqOpenOrders(self) -> List[Trade]:
+    def reqOpenOrders(self) -> list[Trade]:
         """
         Request and return a list of open orders.
 
@@ -805,7 +805,7 @@ class IB:
         """
         return self._run(self.reqOpenOrdersAsync())
 
-    def reqAllOpenOrders(self) -> List[Trade]:
+    def reqAllOpenOrders(self) -> list[Trade]:
         """
         Request and return a list of all open orders over all clients.
         Note that the orders of other clients will not be kept in sync,
@@ -814,7 +814,7 @@ class IB:
         """
         return self._run(self.reqAllOpenOrdersAsync())
 
-    def reqCompletedOrders(self, apiOnly: bool) -> List[Trade]:
+    def reqCompletedOrders(self, apiOnly: bool) -> list[Trade]:
         """
         Request and return a list of completed trades.
 
@@ -824,7 +824,7 @@ class IB:
         return self._run(self.reqCompletedOrdersAsync(apiOnly))
 
     def reqExecutions(
-            self, execFilter: Optional[ExecutionFilter] = None) -> List[Fill]:
+            self, execFilter: ExecutionFilter | None = None) -> list[Fill]:
         """
         It is recommended to use :meth:`.fills`  or
         :meth:`.executions` instead.
@@ -838,7 +838,7 @@ class IB:
         """
         return self._run(self.reqExecutionsAsync(execFilter))
 
-    def reqPositions(self) -> List[Position]:
+    def reqPositions(self) -> list[Position]:
         """
         It is recommended to use :meth:`.positions` instead.
 
@@ -933,7 +933,7 @@ class IB:
                 'cancelPnLSingle: No subscription for '
                 f'account {account}, modelCode {modelCode}, conId {conId}')
 
-    def reqContractDetails(self, contract: Contract) -> List[ContractDetails]:
+    def reqContractDetails(self, contract: Contract) -> list[ContractDetails]:
         """
         Get a list of contract details that match the given contract.
         If the returned list is empty then the contract is not known;
@@ -951,7 +951,7 @@ class IB:
         """
         return self._run(self.reqContractDetailsAsync(contract))
 
-    def reqMatchingSymbols(self, pattern: str) -> List[ContractDescription]:
+    def reqMatchingSymbols(self, pattern: str) -> list[ContractDescription]:
         """
         Request contract descriptions of contracts that match a pattern.
 
@@ -984,7 +984,7 @@ class IB:
     def reqRealTimeBars(
             self, contract: Contract, barSize: int,
             whatToShow: str, useRTH: bool,
-            realTimeBarsOptions: List[TagValue] = []) -> RealTimeBarList:
+            realTimeBarsOptions: list[TagValue] = []) -> RealTimeBarList:
         """
         Request realtime 5 second bars.
 
@@ -1024,10 +1024,10 @@ class IB:
 
     def reqHistoricalData(
             self, contract: Contract,
-            endDateTime: Union[datetime.datetime, datetime.date, str, None],
+            endDateTime: datetime.datetime | datetime.date | str | None,
             durationStr: str, barSizeSetting: str, whatToShow: str,
             useRTH: bool, formatDate: int = 1, keepUpToDate: bool = False,
-            chartOptions: List[TagValue] = [], timeout: float = 60) \
+            chartOptions: list[TagValue] = [], timeout: float = 60) \
             -> BarDataList:
         """
         Request historical bar data.
@@ -1090,8 +1090,7 @@ class IB:
 
     def reqHistoricalSchedule(
             self, contract: Contract, numDays: int,
-            endDateTime: Union[
-                datetime.datetime, datetime.date, str, None] = '',
+            endDateTime: datetime.datetime | datetime.date | str | None = '',
             useRTH: bool = True) -> HistoricalSchedule:
         """
         Request historical schedule.
@@ -1113,11 +1112,11 @@ class IB:
 
     def reqHistoricalTicks(
             self, contract: Contract,
-            startDateTime: Union[str, datetime.date],
-            endDateTime: Union[str, datetime.date],
+            startDateTime: str | datetime.date,
+            endDateTime: str | datetime.date,
             numberOfTicks: int, whatToShow: str, useRth: bool,
             ignoreSize: bool = False,
-            miscOptions: List[TagValue] = []) -> List:
+            miscOptions: list[TagValue] = []) -> list:
         """
         Request historical ticks. The time resolution of the ticks
         is one second.
@@ -1185,7 +1184,7 @@ class IB:
     def reqMktData(
             self, contract: Contract, genericTickList: str = '',
             snapshot: bool = False, regulatorySnapshot: bool = False,
-            mktDataOptions: List[TagValue] = []) -> Ticker:
+            mktDataOptions: list[TagValue] = []) -> Ticker:
         """
         Subscribe to tick data or request a snapshot.
         Returns the Ticker that holds the market data. The ticker will
@@ -1295,7 +1294,7 @@ class IB:
             self._logger.error(
                 f'cancelMktData: No reqId found for contract {contract}')
 
-    def reqSmartComponents(self, bboExchange: str) -> List[SmartComponent]:
+    def reqSmartComponents(self, bboExchange: str) -> list[SmartComponent]:
         """
         Obtain mapping from single letter codes to exchange names.
 
@@ -1304,7 +1303,7 @@ class IB:
         """
         return self._run(self.reqSmartComponentsAsync(bboExchange))
 
-    def reqMktDepthExchanges(self) -> List[DepthMktDataDescription]:
+    def reqMktDepthExchanges(self) -> list[DepthMktDataDescription]:
         """
         Get those exchanges that have have multiple market makers
         (and have ticks returned with marketMaker info).
@@ -1357,7 +1356,7 @@ class IB:
 
     def reqHistogramData(
             self, contract: Contract,
-            useRTH: bool, period: str) -> List[HistogramData]:
+            useRTH: bool, period: str) -> list[HistogramData]:
         """
         Request histogram data.
 
@@ -1377,7 +1376,7 @@ class IB:
 
     def reqFundamentalData(
             self, contract: Contract, reportType: str,
-            fundamentalDataOptions: List[TagValue] = []) -> str:
+            fundamentalDataOptions: list[TagValue] = []) -> str:
         """
         Get fundamental data of a contract in XML format.
 
@@ -1403,8 +1402,8 @@ class IB:
 
     def reqScannerData(
             self, subscription: ScannerSubscription,
-            scannerSubscriptionOptions: List[TagValue] = [],
-            scannerSubscriptionFilterOptions: List[TagValue] = []) \
+            scannerSubscriptionOptions: list[TagValue] = [],
+            scannerSubscriptionFilterOptions: list[TagValue] = []) \
             -> ScanDataList:
         """
         Do a blocking market scan by starting a subscription and canceling it
@@ -1426,8 +1425,8 @@ class IB:
 
     def reqScannerSubscription(
             self, subscription: ScannerSubscription,
-            scannerSubscriptionOptions: List[TagValue] = [],
-            scannerSubscriptionFilterOptions: List[TagValue] = []) \
+            scannerSubscriptionOptions: list[TagValue] = [],
+            scannerSubscriptionFilterOptions: list[TagValue] = []) \
             -> ScanDataList:
         """
         Subscribe to market scan data.
@@ -1476,7 +1475,7 @@ class IB:
     def calculateImpliedVolatility(
             self, contract: Contract,
             optionPrice: float, underPrice: float,
-            implVolOptions: List[TagValue] = []) -> OptionComputation:
+            implVolOptions: list[TagValue] = []) -> OptionComputation:
         """
         Calculate the volatility given the option price.
 
@@ -1497,7 +1496,7 @@ class IB:
     def calculateOptionPrice(
             self, contract: Contract,
             volatility: float, underPrice: float,
-            optPrcOptions: List[TagValue] = []) -> OptionComputation:
+            optPrcOptions: list[TagValue] = []) -> OptionComputation:
         """
         Calculate the option price given the volatility.
 
@@ -1518,7 +1517,7 @@ class IB:
     def reqSecDefOptParams(
             self, underlyingSymbol: str,
             futFopExchange: str, underlyingSecType: str,
-            underlyingConId: int) -> List[OptionChain]:
+            underlyingConId: int) -> list[OptionChain]:
         """
         Get the option chain.
 
@@ -1563,7 +1562,7 @@ class IB:
             reqId, contract, exerciseAction, exerciseQuantity,
             account, override)
 
-    def reqNewsProviders(self) -> List[NewsProvider]:
+    def reqNewsProviders(self) -> list[NewsProvider]:
         """
         Get a list of news providers.
 
@@ -1573,7 +1572,7 @@ class IB:
 
     def reqNewsArticle(
             self, providerCode: str, articleId: str,
-            newsArticleOptions: List[TagValue] = []) -> NewsArticle:
+            newsArticleOptions: list[TagValue] = []) -> NewsArticle:
         """
         Get the body of a news article.
 
@@ -1592,10 +1591,10 @@ class IB:
 
     def reqHistoricalNews(
             self, conId: int, providerCodes: str,
-            startDateTime: Union[str, datetime.date],
-            endDateTime: Union[str, datetime.date],
+            startDateTime: str | datetime.date,
+            endDateTime: str | datetime.date,
             totalResults: int,
-            historicalNewsOptions: List[TagValue] = []) \
+            historicalNewsOptions: list[TagValue] = []) \
             -> HistoricalNews:
         """
         Get historical news headline.
@@ -1775,7 +1774,7 @@ class IB:
 
     async def connectAsync(
             self, host: str = '127.0.0.1', port: int = 7497,
-            clientId: int = 1, timeout: Optional[float] = 4,
+            clientId: int = 1, timeout: float | None = 4,
             readonly: bool = False, account: str = '',
             raiseSyncErrors: bool = False):
         clientId = int(clientId)
@@ -1794,7 +1793,7 @@ class IB:
                 account = accounts[0]
 
             # prepare initializing requests
-            reqs: Dict = {}  # name -> request
+            reqs: dict = {}  # name -> request
             reqs['positions'] = self.reqPositionsAsync()
             if not readonly:
                 reqs['open orders'] = self.reqOpenOrdersAsync()
@@ -1843,7 +1842,7 @@ class IB:
         return self
 
     async def qualifyContractsAsync(self, *contracts: Contract) \
-            -> List[Contract]:
+            -> list[Contract]:
         detailsLists = await asyncio.gather(
             *(self.reqContractDetailsAsync(c) for c in contracts))
         result = []
@@ -1867,7 +1866,7 @@ class IB:
 
     async def reqTickersAsync(
             self, *contracts: Contract, regulatorySnapshot: bool = False) \
-            -> List[Ticker]:
+            -> list[Ticker]:
         futures = []
         tickers = []
         reqIds = []
@@ -1912,7 +1911,7 @@ class IB:
         return future
 
     async def accountSummaryAsync(self, account: str = '') \
-            -> List[AccountValue]:
+            -> list[AccountValue]:
         if not self.wrapper.acctSummary:
             # loaded on demand since it takes ca. 250 ms
             await self.reqAccountSummaryAsync()
@@ -1940,44 +1939,44 @@ class IB:
         self.client.reqAccountSummary(reqId, 'All', tags)
         return future
 
-    def reqOpenOrdersAsync(self) -> Awaitable[List[Trade]]:
+    def reqOpenOrdersAsync(self) -> Awaitable[list[Trade]]:
         future = self.wrapper.startReq('openOrders')
         self.client.reqOpenOrders()
         return future
 
-    def reqAllOpenOrdersAsync(self) -> Awaitable[List[Trade]]:
+    def reqAllOpenOrdersAsync(self) -> Awaitable[list[Trade]]:
         future = self.wrapper.startReq('openOrders')
         self.client.reqAllOpenOrders()
         return future
 
-    def reqCompletedOrdersAsync(self, apiOnly: bool) -> Awaitable[List[Trade]]:
+    def reqCompletedOrdersAsync(self, apiOnly: bool) -> Awaitable[list[Trade]]:
         future = self.wrapper.startReq('completedOrders')
         self.client.reqCompletedOrders(apiOnly)
         return future
 
     def reqExecutionsAsync(
-            self, execFilter: Optional[ExecutionFilter] = None) \
-            -> Awaitable[List[Fill]]:
+            self, execFilter: ExecutionFilter | None = None) \
+            -> Awaitable[list[Fill]]:
         execFilter = execFilter or ExecutionFilter()
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqExecutions(reqId, execFilter)
         return future
 
-    def reqPositionsAsync(self) -> Awaitable[List[Position]]:
+    def reqPositionsAsync(self) -> Awaitable[list[Position]]:
         future = self.wrapper.startReq('positions')
         self.client.reqPositions()
         return future
 
     def reqContractDetailsAsync(self, contract: Contract) \
-            -> Awaitable[List[ContractDetails]]:
+            -> Awaitable[list[ContractDetails]]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)
         self.client.reqContractDetails(reqId, contract)
         return future
 
     async def reqMatchingSymbolsAsync(self, pattern: str) \
-            -> Optional[List[ContractDescription]]:
+            -> list[ContractDescription] | None:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqMatchingSymbols(reqId, pattern)
@@ -1989,7 +1988,7 @@ class IB:
             return None
 
     async def reqMarketRuleAsync(
-            self, marketRuleId: int) -> Optional[List[PriceIncrement]]:
+            self, marketRuleId: int) -> list[PriceIncrement] | None:
         future = self.wrapper.startReq(f'marketRule-{marketRuleId}')
         try:
             self.client.reqMarketRule(marketRuleId)
@@ -2001,11 +2000,11 @@ class IB:
 
     async def reqHistoricalDataAsync(
             self, contract: Contract,
-            endDateTime: Union[datetime.datetime, datetime.date, str, None],
+            endDateTime: datetime.datetime | datetime.date | str | None,
             durationStr: str, barSizeSetting: str,
             whatToShow: str, useRTH: bool,
             formatDate: int = 1, keepUpToDate: bool = False,
-            chartOptions: List[TagValue] = [], timeout: float = 60) \
+            chartOptions: list[TagValue] = [], timeout: float = 60) \
             -> BarDataList:
         reqId = self.client.getReqId()
         bars = BarDataList()
@@ -2037,8 +2036,7 @@ class IB:
 
     def reqHistoricalScheduleAsync(
             self, contract: Contract, numDays: int,
-            endDateTime: Union[
-                datetime.datetime, datetime.date, str, None] = '',
+            endDateTime: datetime.datetime | datetime.date | str | None = '',
             useRTH: bool = True) -> Awaitable[HistoricalSchedule]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)
@@ -2050,11 +2048,11 @@ class IB:
 
     def reqHistoricalTicksAsync(
             self, contract: Contract,
-            startDateTime: Union[str, datetime.date],
-            endDateTime: Union[str, datetime.date],
+            startDateTime: str | datetime.date,
+            endDateTime: str | datetime.date,
             numberOfTicks: int, whatToShow: str, useRth: bool,
             ignoreSize: bool = False,
-            miscOptions: List[TagValue] = []) -> Awaitable[List]:
+            miscOptions: list[TagValue] = []) -> Awaitable[list]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)
         start = util.formatIBDatetime(startDateTime)
@@ -2082,14 +2080,14 @@ class IB:
         return future
 
     def reqMktDepthExchangesAsync(self) \
-            -> Awaitable[List[DepthMktDataDescription]]:
+            -> Awaitable[list[DepthMktDataDescription]]:
         future = self.wrapper.startReq('mktDepthExchanges')
         self.client.reqMktDepthExchanges()
         return future
 
     def reqHistogramDataAsync(
             self, contract: Contract, useRTH: bool, period: str) \
-            -> Awaitable[List[HistogramData]]:
+            -> Awaitable[list[HistogramData]]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)
         self.client.reqHistogramData(reqId, contract, useRTH, period)
@@ -2097,7 +2095,7 @@ class IB:
 
     def reqFundamentalDataAsync(
             self, contract: Contract, reportType: str,
-            fundamentalDataOptions: List[TagValue] = []) \
+            fundamentalDataOptions: list[TagValue] = []) \
             -> Awaitable[str]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)
@@ -2107,8 +2105,8 @@ class IB:
 
     async def reqScannerDataAsync(
             self, subscription: ScannerSubscription,
-            scannerSubscriptionOptions: List[TagValue] = [],
-            scannerSubscriptionFilterOptions: List[TagValue] = []) \
+            scannerSubscriptionOptions: list[TagValue] = [],
+            scannerSubscriptionFilterOptions: list[TagValue] = []) \
             -> ScanDataList:
         dataList = self.reqScannerSubscription(
             subscription, scannerSubscriptionOptions or [],
@@ -2126,8 +2124,8 @@ class IB:
     async def calculateImpliedVolatilityAsync(
             self, contract: Contract,
             optionPrice: float, underPrice: float,
-            implVolOptions: List[TagValue] = []) \
-            -> Optional[OptionComputation]:
+            implVolOptions: list[TagValue] = []) \
+            -> OptionComputation | None:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)
         self.client.calculateImpliedVolatility(
@@ -2144,7 +2142,7 @@ class IB:
     async def calculateOptionPriceAsync(
             self, contract: Contract,
             volatility: float, underPrice: float,
-            optPrcOptions: List[TagValue] = []) -> Optional[OptionComputation]:
+            optPrcOptions: list[TagValue] = []) -> OptionComputation | None:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)
         self.client.calculateOptionPrice(
@@ -2161,7 +2159,7 @@ class IB:
     def reqSecDefOptParamsAsync(
             self, underlyingSymbol: str,
             futFopExchange: str, underlyingSecType: str,
-            underlyingConId: int) -> Awaitable[List[OptionChain]]:
+            underlyingConId: int) -> Awaitable[list[OptionChain]]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqSecDefOptParams(
@@ -2169,14 +2167,14 @@ class IB:
             underlyingSecType, underlyingConId)
         return future
 
-    def reqNewsProvidersAsync(self) -> Awaitable[List[NewsProvider]]:
+    def reqNewsProvidersAsync(self) -> Awaitable[list[NewsProvider]]:
         future = self.wrapper.startReq('newsProviders')
         self.client.reqNewsProviders()
         return future
 
     def reqNewsArticleAsync(
             self, providerCode: str, articleId: str,
-            newsArticleOptions: List[TagValue] = []) \
+            newsArticleOptions: list[TagValue] = []) \
             -> Awaitable[NewsArticle]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
@@ -2186,11 +2184,11 @@ class IB:
 
     async def reqHistoricalNewsAsync(
             self, conId: int, providerCodes: str,
-            startDateTime: Union[str, datetime.date],
-            endDateTime: Union[str, datetime.date],
+            startDateTime: str | datetime.date,
+            endDateTime: str | datetime.date,
             totalResults: int,
-            historicalNewsOptions: List[TagValue] = []) \
-            -> Optional[HistoricalNews]:
+            historicalNewsOptions: list[TagValue] = []) \
+            -> HistoricalNews | None:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         start = util.formatIBDatetime(startDateTime)

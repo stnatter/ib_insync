@@ -2,7 +2,7 @@
 
 import datetime as dt
 from dataclasses import dataclass, field
-from typing import List, NamedTuple, Optional
+from typing import NamedTuple
 
 import ib_insync.util as util
 
@@ -100,8 +100,8 @@ class Contract:
     description: str = ''
     issuerId: str = ''
     comboLegsDescrip: str = ''
-    comboLegs: List['ComboLeg'] = field(default_factory=list)
-    deltaNeutralContract: Optional['DeltaNeutralContract'] = None
+    comboLegs: list['ComboLeg'] = field(default_factory=list)
+    deltaNeutralContract: 'DeltaNeutralContract | None' = None
 
     @staticmethod
     def create(**kwargs) -> 'Contract':
@@ -445,7 +445,7 @@ class TagValue(NamedTuple):
     value: str
 
 
-@dataclass
+@dataclass(slots=True)
 class ComboLeg:
     conId: int = 0
     ratio: int = 0
@@ -457,7 +457,7 @@ class ComboLeg:
     exemptCode: int = -1
 
 
-@dataclass
+@dataclass(slots=True)
 class DeltaNeutralContract:
     conId: int = 0
     delta: float = 0.0
@@ -469,9 +469,9 @@ class TradingSession(NamedTuple):
     end: dt.datetime
 
 
-@dataclass
+@dataclass(slots=True)
 class ContractDetails:
-    contract: Optional[Contract] = None
+    contract: Contract | None = None
     marketName: str = ''
     minTick: float = 0.0
     orderTypes: str = ''
@@ -493,7 +493,7 @@ class ContractDetails:
     underSymbol: str = ''
     underSecType: str = ''
     marketRuleIds: str = ''
-    secIdList: List[TagValue] = field(default_factory=list)
+    secIdList: list[TagValue] = field(default_factory=list)
     realExpirationDate: str = ''
     lastTradeTime: str = ''
     stockType: str = ''
@@ -517,13 +517,13 @@ class ContractDetails:
     nextOptionPartial: bool = False
     notes: str = ''
 
-    def tradingSessions(self) -> List[TradingSession]:
+    def tradingSessions(self) -> list[TradingSession]:
         return self._parseSessions(self.tradingHours)
 
-    def liquidSessions(self) -> List[TradingSession]:
+    def liquidSessions(self) -> list[TradingSession]:
         return self._parseSessions(self.liquidHours)
 
-    def _parseSessions(self, s: str) -> List[TradingSession]:
+    def _parseSessions(self, s: str) -> list[TradingSession]:
         tz = util.ZoneInfo(self.timeZoneId)
         sessions = []
         for sess in s.split(';'):
@@ -535,13 +535,13 @@ class ContractDetails:
         return sessions
 
 
-@dataclass
+@dataclass(slots=True)
 class ContractDescription:
-    contract: Optional[Contract] = None
-    derivativeSecTypes: List[str] = field(default_factory=list)
+    contract: Contract | None = None
+    derivativeSecTypes: list[str] = field(default_factory=list)
 
 
-@dataclass
+@dataclass(slots=True)
 class ScanData:
     rank: int
     contractDetails: ContractDetails

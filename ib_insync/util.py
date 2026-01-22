@@ -8,7 +8,8 @@ import signal
 import sys
 import time
 from dataclasses import fields, is_dataclass
-from typing import AsyncIterator, Awaitable, Callable, Iterator, List, Optional, Union
+from collections.abc import AsyncIterator, Awaitable, Callable, Iterator
+from typing import cast
 
 import eventkit as ev
 
@@ -24,10 +25,10 @@ EPOCH = dt.datetime(1970, 1, 1, tzinfo=dt.timezone.utc)
 UNSET_INTEGER = 2 ** 31 - 1
 UNSET_DOUBLE = sys.float_info.max
 
-Time_t = Union[dt.time, dt.datetime]
+Time_t = dt.time | dt.datetime
 
 
-def df(objs, labels: Optional[List[str]] = None):
+def df(objs, labels: list[str] | None = None):
     """
     Create pandas DataFrame from the sequence of same-type objects.
 
@@ -101,9 +102,10 @@ def dataclassUpdate(obj, *srcObjs, **kwargs) -> object:
     """
     if not is_dataclass(obj):
         raise TypeError(f'Object {obj} is not a dataclass')
+    obj_dict = cast(dict, obj.__dict__)
     for srcObj in srcObjs:
-        obj.__dict__.update(dataclassAsDict(srcObj))
-    obj.__dict__.update(**kwargs)
+        obj_dict.update(dataclassAsDict(srcObj))
+    obj_dict.update(**kwargs)
     return obj
 
 
@@ -135,20 +137,21 @@ def tree(obj):
     Convert object to a tree of lists, dicts and simple values.
     The result can be serialized to JSON.
     """
-    if isinstance(obj, (bool, int, float, str, bytes)):
-        return obj
-    elif isinstance(obj, (dt.date, dt.time)):
-        return obj.isoformat()
-    elif isinstance(obj, dict):
-        return {k: tree(v) for k, v in obj.items()}
-    elif isnamedtupleinstance(obj):
-        return {f: tree(getattr(obj, f)) for f in obj._fields}
-    elif isinstance(obj, (list, tuple, set)):
-        return [tree(i) for i in obj]
-    elif is_dataclass(obj):
-        return {obj.__class__.__qualname__: tree(dataclassNonDefaults(obj))}
-    else:
-        return str(obj)
+    match obj:
+        case bool() | int() | float() | str() | bytes():
+            return obj
+        case dt.date() | dt.time():
+            return obj.isoformat()
+        case dict():
+            return {k: tree(v) for k, v in obj.items()}
+        case _ if isnamedtupleinstance(obj):
+            return {f: tree(getattr(obj, f)) for f in obj._fields}
+        case list() | tuple() | set():
+            return [tree(i) for i in obj]
+        case _ if is_dataclass(obj):
+            return {obj.__class__.__qualname__: tree(dataclassNonDefaults(obj))}
+        case _:
+            return str(obj)
 
 
 def barplot(bars, title='', upColor='blue', downColor='red'):
@@ -291,7 +294,7 @@ class timeit:
         print(f'{self.title} took {formatSI(time.time() - self.t0)}s')
 
 
-def run(*awaitables: Awaitable, timeout: Optional[float] = None):
+def run(*awaitables: Awaitable, timeout: float | None = None):
     """
     By default run the event loop forever.
 
@@ -496,7 +499,7 @@ def useQt(qtLib: str = 'PyQt5', period: float = 0.01):
     qt_step()
 
 
-def formatIBDatetime(t: Union[dt.date, dt.datetime, str, None]) -> str:
+def formatIBDatetime(t: dt.date | dt.datetime | str | None) -> str:
     """Format date or datetime to string that IB uses."""
     if not t:
         s = ''
@@ -513,7 +516,7 @@ def formatIBDatetime(t: Union[dt.date, dt.datetime, str, None]) -> str:
     return s
 
 
-def parseIBDatetime(s: str) -> Union[dt.date, dt.datetime]:
+def parseIBDatetime(s: str) -> dt.date | dt.datetime:
     """Parse string in IB date or datetime format to datetime."""
     if len(s) == 8:
         # YYYYmmdd
