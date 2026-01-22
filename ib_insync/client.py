@@ -210,9 +210,8 @@ class Client:
             timeout = timeout or None
             await asyncio.wait_for(self.conn.connectAsync(host, port), timeout)
             self._logger.info('Connected')
-            msg = b'API\0' + self._prefix(b'v%d..%d%s' % (
-                self.MinClientVersion, self.MaxClientVersion,
-                b' ' + self.connectOptions if self.connectOptions else b''))
+            connectOpts = b' ' + self.connectOptions if self.connectOptions else b''
+            msg = b'API\0' + self._prefix(f'v{self.MinClientVersion}..{self.MaxClientVersion}{connectOpts.decode()}'.encode())
             self.conn.sendMsg(msg)
             await asyncio.wait_for(self.apiStart, timeout)
             self._logger.info('API connection ready')

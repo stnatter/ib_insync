@@ -288,7 +288,7 @@ class timeit:
         self.t0 = time.time()
 
     def __exit__(self, *_args):
-        print(self.title + ' took ' + formatSI(time.time() - self.t0) + 's')
+        print(f'{self.title} took {formatSI(time.time() - self.t0)}s')
 
 
 def run(*awaitables: Awaitable, timeout: Optional[float] = None):

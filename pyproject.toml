@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ib_insync"
+dynamic = ["version"]
+description = "Python sync/async framework for Interactive Brokers API"
+readme = "README.rst"
+license = "BSD-3-Clause"
+requires-python = ">=3.14"
+authors = [
+    {name = "Ewald R. de Wit", email = "ewald.de.wit@gmail.com"},
+]
+maintainers = [
+    {name = "Ewald R. de Wit", email = "ewald.de.wit@gmail.com"},
+]
+keywords = ["ibapi", "tws", "asyncio", "jupyter", "interactive", "brokers", "async"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Office/Business :: Financial :: Investment",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3 :: Only",
+]
+dependencies = [
+    "eventkit",
+    "nest_asyncio",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "flake8",
+    "mypy",
+    "types-dataclasses",
+]
+
+[project.urls]
+Homepage = "https://github.com/erdewit/ib_insync"
+Repository = "https://github.com/erdewit/ib_insync"
+Issues = "https://github.com/erdewit/ib_insync/issues"
+
+[tool.setuptools]
+packages = ["ib_insync"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+ib_insync = ["py.typed"]
+
+[tool.setuptools.dynamic]
+version = {attr = "ib_insync.version.__version__"}
+
+[tool.mypy]
+ignore_missing_imports = true
+check_untyped_defs = true
+
+[tool.flake8]
+ignore = ["D101", "D102", "D105", "D107", "D205", "D400", "D401", "W503"]
+max-line-length = 88
+extend-ignore = ["E203"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--disable-warnings",
+]
+
+[tool.coverage.run]
+source = ["ib_insync"]
+omit = ["*/tests/*", "*/test_*.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+]
