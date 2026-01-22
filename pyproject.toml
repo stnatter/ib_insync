@@ -25,7 +25,6 @@ classifiers = [
 ]
 dependencies = [
     "eventkit @ git+https://github.com/stnatter/eventkit.git",
-    "nest_asyncio",
 ]
 
 [project.optional-dependencies]
