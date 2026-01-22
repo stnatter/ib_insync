@@ -11,6 +11,7 @@ def event_loop():
     loop.close()
 
 
+@pytest.mark.asyncio
 @pytest.fixture(scope='session')
 async def ib():
     ib = ibi.IB()
