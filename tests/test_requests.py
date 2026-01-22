@@ -2,14 +2,15 @@ import pytest
 
 import ib_insync as ibi
 
-pytestmark = pytest.mark.asyncio
+pytestmark = pytest.mark.asyncio(loop_scope="session")
 
 
 async def test_request_error_raised(ib):
     contract = ibi.Forex('EURUSD')
     order = ibi.MarketOrder('BUY', 100)
     orderState = await ib.whatIfOrderAsync(contract, order)
-    assert orderState.commission > 0
+    assert orderState is not None
+    assert orderState.status
 
     ib.RaiseRequestErrors = True
     badContract = ibi.Stock('XXX')

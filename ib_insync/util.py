@@ -448,7 +448,12 @@ async def waitUntilAsync(t: Time_t) -> bool:
 
 def getLoop():
     """Get the asyncio event loop for the current thread."""
-    return asyncio.get_event_loop_policy().get_event_loop()
+    try:
+        return asyncio.get_running_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        return loop
 
 
 def useQt(qtLib: str = 'PyQt5', period: float = 0.01):

@@ -1,12 +1,16 @@
 
 import pytest
+import pytest_asyncio
 
 import ib_insync as ibi
 
 
-@pytest.fixture(scope='session')
+@pytest_asyncio.fixture(scope='session', loop_scope='session')
 async def ib():
     ib = ibi.IB()
-    await ib.connectAsync()
+    try:
+        await ib.connectAsync(port=7947)
+    except (ConnectionRefusedError, TimeoutError):
+        pytest.skip("IB Gateway/TWS not running")
     yield ib
     ib.disconnect()
