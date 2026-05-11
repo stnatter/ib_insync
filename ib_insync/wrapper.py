@@ -22,6 +22,7 @@ from ib_insync.objects import (
     TickByTickMidPoint, TickData, TradeLogEntry)
 from ib_insync.order import Order, OrderState, OrderStatus, Trade
 from ib_insync.ticker import Ticker
+from eventkit import Event
 from ib_insync.util import (
     UNSET_DOUBLE, UNSET_INTEGER, dataclassAsDict, dataclassUpdate,
     getLoop, globalErrorEvent, isNan, parseIBDatetime)
@@ -166,7 +167,7 @@ class Wrapper:
 
     def setEventsDone(self):
         """Set all subscription-type events as done."""
-        events = [ticker.updateEvent for ticker in self.tickers.values()]
+        events: list[Event] = [ticker.updateEvent for ticker in self.tickers.values()]
         events += [sub.updateEvent for sub in self.reqId2Subscriber.values()]
         for trade in self.trades.values():
             events += [
