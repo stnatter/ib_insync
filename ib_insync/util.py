@@ -9,7 +9,6 @@ import sys
 import time
 from dataclasses import fields, is_dataclass
 from collections.abc import AsyncIterator, Awaitable, Callable, Iterator
-from typing import cast
 
 import eventkit as ev
 
