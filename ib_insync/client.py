@@ -7,6 +7,10 @@ import math
 import struct
 import time
 from collections import deque
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .wrapper import Wrapper
 
 from eventkit import Event
 
@@ -88,7 +92,7 @@ class Client:
 
     (DISCONNECTED, CONNECTING, CONNECTED) = range(3)
 
-    def __init__(self, wrapper):
+    def __init__(self, wrapper: "Wrapper") -> None:
         self.wrapper = wrapper
         self.decoder = Decoder(wrapper, 0)
         self.apiStart = Event('apiStart')

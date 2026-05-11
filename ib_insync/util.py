@@ -102,10 +102,11 @@ def dataclassUpdate(obj, *srcObjs, **kwargs) -> object:
     """
     if not is_dataclass(obj):
         raise TypeError(f'Object {obj} is not a dataclass')
-    obj_dict = cast(dict, obj.__dict__)
     for srcObj in srcObjs:
-        obj_dict.update(dataclassAsDict(srcObj))
-    obj_dict.update(**kwargs)
+        for name, value in dataclassAsDict(srcObj).items():
+            setattr(obj, name, value)
+    for name, value in kwargs.items():
+        setattr(obj, name, value)
     return obj
 
 

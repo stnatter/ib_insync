@@ -204,7 +204,10 @@ class IB:
     MaxSyncedSubAccounts: int = 50
     TimezoneTWS: str = ''
 
-    def __init__(self):
+    wrapper: Wrapper
+    client: Client
+
+    def __init__(self) -> None:
         self._createEvents()
         self.wrapper = Wrapper(self)
         self.client = Client(self.wrapper)
@@ -284,7 +287,7 @@ class IB:
             host, port, clientId, timeout, readonly, account,
             raiseSyncErrors))
 
-    def disconnect(self):
+    def disconnect(self) -> None:
         """
         Disconnect from a TWS or IB gateway application.
         This will clear all session state.

@@ -144,14 +144,14 @@ class Contract:
             self.conId and self.conId != 28812380
             and self.secType != 'BAG')
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         return (
             isinstance(other, Contract)
             and (
                 self.conId and self.conId == other.conId
                 or util.dataclassAsDict(self) == util.dataclassAsDict(other)))
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         if not self.isHashable():
             raise ValueError(f'Contract {self} can\'t be hashed')
         if self.secType == 'CONTFUT':
@@ -161,7 +161,7 @@ class Contract:
             h = self.conId
         return h
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         attrs = util.dataclassNonDefaults(self)
         if self.__class__ is not Contract:
             attrs.pop('secType', '')
