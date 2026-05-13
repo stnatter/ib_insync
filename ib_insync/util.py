@@ -9,10 +9,12 @@ import sys
 import time
 from dataclasses import fields, is_dataclass
 from collections.abc import AsyncIterator, Awaitable, Callable, Iterator
+from zoneinfo import ZoneInfo
 
 import eventkit as ev
+import pandas as pd
 
-from zoneinfo import ZoneInfo
+
 
 
 globalErrorEvent = ev.Event()
@@ -34,7 +36,6 @@ def df(objs, labels: list[str] | None = None):
     Args:
       labels: If supplied, retain only the given labels and drop the rest.
     """
-    import pandas as pd
     from .objects import DynamicObject
     if objs:
         objs = list(objs)
