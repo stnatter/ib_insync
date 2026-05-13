@@ -12,9 +12,6 @@ from collections.abc import AsyncIterator, Awaitable, Callable, Iterator
 from zoneinfo import ZoneInfo
 
 import eventkit as ev
-import pandas as pd
-
-
 
 
 globalErrorEvent = ev.Event()
@@ -31,6 +28,7 @@ Time_t = dt.time | dt.datetime
 
 def df(objs, labels: list[str] | None = None):
     """
+    import pandas as pd
     Create pandas DataFrame from the sequence of same-type objects.
 
     Args:
