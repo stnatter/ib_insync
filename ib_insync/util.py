@@ -28,13 +28,13 @@ Time_t = dt.time | dt.datetime
 
 def df(objs, labels: list[str] | None = None):
     """
-    import pandas as pd
     Create pandas DataFrame from the sequence of same-type objects.
 
     Args:
       labels: If supplied, retain only the given labels and drop the rest.
     """
     from .objects import DynamicObject
+    import pandas as pd
     if objs:
         objs = list(objs)
         obj = objs[0]
