@@ -35,7 +35,7 @@ jobs:
 
       - name: Ruff static code analysis
         run: |
-          ruff check ib_insync
+          ruff format ib_insync tests && ruff check --fix ib_insync tests
 
       - name: MyPy static code analysis
         run: |
