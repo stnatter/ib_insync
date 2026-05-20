@@ -471,6 +471,16 @@ def useQt(qtLib: str = 'PyQt5', period: float = 0.01):
           * PySide6
         period: Period in seconds to poll Qt.
     """
+    if qtLib not in ('PyQt5', 'PyQt6', 'PySide2', 'PySide6'):
+        raise RuntimeError(f'Unknown Qt library: {qtLib}')
+    from importlib import import_module
+    qc = import_module(qtLib + '.QtCore')
+    qw = import_module(qtLib + '.QtWidgets')
+    qApp = (qw.QApplication.instance()     # type: ignore
+            or qw.QApplication(sys.argv))  # type: ignore
+    loop = getLoop()
+    stack: list = []
+
     def qt_step():
         loop.call_later(period, qt_step)
         if not stack:
@@ -485,16 +495,6 @@ def useQt(qtLib: str = 'PyQt5', period: float = 0.01):
         stack.append((qloop, timer))
         qApp.processEvents()  # type: ignore
 
-    if qtLib not in ('PyQt5', 'PyQt6', 'PySide2', 'PySide6'):
-        raise RuntimeError(f'Unknown Qt library: {qtLib}')
-    from importlib import import_module
-    qc = import_module(qtLib + '.QtCore')
-    qw = import_module(qtLib + '.QtWidgets')
-    global qApp
-    qApp = (qw.QApplication.instance()     # type: ignore
-            or qw.QApplication(sys.argv))  # type: ignore
-    loop = getLoop()
-    stack: list = []
     qt_step()
 
 
