@@ -1,4 +1,4 @@
-|Build| |Group| |PyVersion| |Status| |PyPiVersion| |License| |Downloads| |Docs|
+|Build| |PyVersion| |License|
 
 Introduction
 ============
@@ -82,12 +82,6 @@ The complete `API documentation <https://ib-insync.readthedocs.io/api.html>`_.
 
 `Changelog <https://ib-insync.readthedocs.io/changelog.html>`_.
 
-Discussion
-----------
-
-The `insync user group <https://groups.io/g/insync>`_ is the place to discuss
-IB-insync and anything related to it.
-
 Disclaimer
 ----------
 
@@ -101,34 +95,12 @@ Good luck and enjoy,
 
 .. _`Interactive Brokers Python API`: http://interactivebrokers.github.io
 
-.. |Group| image:: https://img.shields.io/badge/groups.io-insync-green.svg
-   :alt: Join the user group
-   :target: https://groups.io/g/insync
-
-.. |PyPiVersion| image:: https://img.shields.io/pypi/v/ib_insync.svg
-   :alt: PyPi
-   :target: https://pypi.python.org/pypi/ib_insync
-
-.. |CondaVersion| image:: https://img.shields.io/conda/vn/conda-forge/ib-insync.svg
-   :alt: Conda
-   :target: https://anaconda.org/conda-forge/ib-insync
-
 .. |PyVersion| image:: https://img.shields.io/badge/python-3.14+-blue.svg
-   :alt:
-
-.. |Status| image:: https://img.shields.io/badge/status-beta-green.svg
    :alt:
 
 .. |License| image:: https://img.shields.io/badge/license-BSD-blue.svg
    :alt:
 
-.. |Docs| image:: https://img.shields.io/badge/Documentation-green.svg
-   :alt: Documentation
-   :target: https://ib-insync.readthedocs.io/api.html
-
-.. |Downloads| image:: https://static.pepy.tech/badge/ib-insync
-   :alt: Number of downloads
-   :target: https://pepy.tech/project/ib-insync
 
 .. |Build| image:: https://github.com/stnatter/ib_insync/actions/workflows/test.yml/badge.svg?branch=master
    :target: https://github.com/stnatter/ib_insync/actions
