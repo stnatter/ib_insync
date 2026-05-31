@@ -735,6 +735,7 @@ class Decoder:
         p.ParseFromString(payload)
         for bar_p in p.historicalDataBars:
             self.wrapper.historicalData(p.reqId, _bar_from_proto(bar_p))
+        self.wrapper.historicalDataEnd(p.reqId, '', '')
 
     def _proto_historical_data_end(self, payload: bytes) -> None:
         p = _pb('HistoricalDataEnd')()
@@ -1086,6 +1087,7 @@ class Decoder:
         105: _proto_wsh_event_data,
         106: _proto_historical_schedule,
         107: _proto_user_info,
+        108: _proto_historical_data_end,
     }
 
     def interpret(self, fields):
