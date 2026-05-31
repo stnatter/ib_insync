@@ -88,7 +88,116 @@ class Client:
     RequestsInterval = 1
 
     MinClientVersion = 157
-    MaxClientVersion = 178
+    MaxClientVersion = 225
+
+    # Server version gates added between v179 and v225
+    MIN_SERVER_VER_FUND_DATA_FIELDS = 179
+    MIN_SERVER_VER_LAST_TRADE_DATE = 182
+    MIN_SERVER_VER_CUSTOMER_ACCOUNT = 183
+    MIN_SERVER_VER_PROFESSIONAL_CUSTOMER = 184
+    MIN_SERVER_VER_BOND_ACCRUED_INTEREST = 185
+    MIN_SERVER_VER_INELIGIBILITY_REASONS = 186
+    MIN_SERVER_VER_RFQ_FIELDS = 187
+    MIN_SERVER_VER_BOND_TRADING_HOURS = 188
+    MIN_SERVER_VER_INCLUDE_OVERNIGHT = 189
+    MIN_SERVER_VER_UNDO_RFQ_FIELDS = 190
+    MIN_SERVER_VER_CME_TAGGING_FIELDS = 192
+    MIN_SERVER_VER_CME_TAGGING_FIELDS_IN_OPEN_ORDER = 193
+    MIN_SERVER_VER_ERROR_TIME = 194
+    MIN_SERVER_VER_HISTORICAL_DATA_END = 196
+    MIN_SERVER_VER_SUBMITTER = 198
+    MIN_SERVER_VER_IMBALANCE_ONLY = 199
+    MIN_SERVER_VER_PARAMETRIZED_DAYS_OF_EXECUTIONS = 200
+    MIN_SERVER_VER_PROTOBUF = 201
+    MIN_SERVER_VER_PROTOBUF_PLACE_ORDER = 203
+    MIN_SERVER_VER_PROTOBUF_COMPLETED_ORDER = 204
+    MIN_SERVER_VER_PROTOBUF_CONTRACT_DATA = 205
+    MIN_SERVER_VER_PROTOBUF_MARKET_DATA = 206
+    MIN_SERVER_VER_PROTOBUF_ACCOUNTS_POSITIONS = 207
+    MIN_SERVER_VER_PROTOBUF_HISTORICAL_DATA = 208
+    MIN_SERVER_VER_PROTOBUF_NEWS_DATA = 209
+    MIN_SERVER_VER_PROTOBUF_SCAN_DATA = 210
+    MIN_SERVER_VER_PROTOBUF_REST_MESSAGES_1 = 211
+    MIN_SERVER_VER_PROTOBUF_REST_MESSAGES_2 = 212
+    MIN_SERVER_VER_PROTOBUF_REST_MESSAGES_3 = 213
+    MIN_SERVER_VER_CANCEL_CONTRACT_DATA = 215
+    MIN_SERVER_VER_ADDITIONAL_ORDER_PARAMS_1 = 216
+    MIN_SERVER_VER_ADDITIONAL_ORDER_PARAMS_2 = 217
+    MIN_SERVER_VER_ATTACHED_ORDERS = 218
+    MIN_SERVER_VER_HEDGE_MAX_SIZE = 223
+    MIN_SERVER_VER_ODD_LOT_BID_ASK_QUOTES = 225
+
+    PROTOBUF_MSG_ID = 200
+
+    # Maps outbound message id -> minimum server version for protobuf encoding
+    PROTOBUF_MSG_IDS: dict[int, int] = {
+        7: MIN_SERVER_VER_PROTOBUF,           # REQ_EXECUTIONS
+        3: MIN_SERVER_VER_PROTOBUF_PLACE_ORDER,  # PLACE_ORDER
+        4: MIN_SERVER_VER_PROTOBUF_PLACE_ORDER,  # CANCEL_ORDER
+        58: MIN_SERVER_VER_PROTOBUF_PLACE_ORDER,  # REQ_GLOBAL_CANCEL
+        16: MIN_SERVER_VER_PROTOBUF_COMPLETED_ORDER,  # REQ_ALL_OPEN_ORDERS
+        15: MIN_SERVER_VER_PROTOBUF_COMPLETED_ORDER,  # REQ_AUTO_OPEN_ORDERS
+        26: MIN_SERVER_VER_PROTOBUF_COMPLETED_ORDER,  # REQ_OPEN_ORDERS
+        86: MIN_SERVER_VER_PROTOBUF_COMPLETED_ORDER,  # REQ_COMPLETED_ORDERS
+        9: MIN_SERVER_VER_PROTOBUF_CONTRACT_DATA,    # REQ_CONTRACT_DATA
+        1: MIN_SERVER_VER_PROTOBUF_MARKET_DATA,      # REQ_MKT_DATA
+        2: MIN_SERVER_VER_PROTOBUF_MARKET_DATA,      # CANCEL_MKT_DATA
+        10: MIN_SERVER_VER_PROTOBUF_MARKET_DATA,     # REQ_MKT_DEPTH
+        11: MIN_SERVER_VER_PROTOBUF_MARKET_DATA,     # CANCEL_MKT_DEPTH
+        59: MIN_SERVER_VER_PROTOBUF_MARKET_DATA,     # REQ_MARKET_DATA_TYPE
+        6: MIN_SERVER_VER_PROTOBUF_ACCOUNTS_POSITIONS,   # REQ_ACCT_DATA
+        17: MIN_SERVER_VER_PROTOBUF_ACCOUNTS_POSITIONS,  # REQ_MANAGED_ACCTS
+        61: MIN_SERVER_VER_PROTOBUF_ACCOUNTS_POSITIONS,  # REQ_POSITIONS
+        64: MIN_SERVER_VER_PROTOBUF_ACCOUNTS_POSITIONS,  # CANCEL_POSITIONS
+        62: MIN_SERVER_VER_PROTOBUF_ACCOUNTS_POSITIONS,  # REQ_ACCOUNT_SUMMARY
+        63: MIN_SERVER_VER_PROTOBUF_ACCOUNTS_POSITIONS,  # CANCEL_ACCOUNT_SUMMARY
+        74: MIN_SERVER_VER_PROTOBUF_ACCOUNTS_POSITIONS,  # REQ_POSITIONS_MULTI
+        75: MIN_SERVER_VER_PROTOBUF_ACCOUNTS_POSITIONS,  # CANCEL_POSITIONS_MULTI
+        76: MIN_SERVER_VER_PROTOBUF_ACCOUNTS_POSITIONS,  # REQ_ACCOUNT_UPDATES_MULTI
+        77: MIN_SERVER_VER_PROTOBUF_ACCOUNTS_POSITIONS,  # CANCEL_ACCOUNT_UPDATES_MULTI
+        20: MIN_SERVER_VER_PROTOBUF_HISTORICAL_DATA,     # REQ_HISTORICAL_DATA
+        25: MIN_SERVER_VER_PROTOBUF_HISTORICAL_DATA,     # CANCEL_HISTORICAL_DATA
+        50: MIN_SERVER_VER_PROTOBUF_HISTORICAL_DATA,     # REQ_REAL_TIME_BARS
+        51: MIN_SERVER_VER_PROTOBUF_HISTORICAL_DATA,     # CANCEL_REAL_TIME_BARS
+        87: MIN_SERVER_VER_PROTOBUF_HISTORICAL_DATA,     # REQ_HEAD_TIMESTAMP
+        88: MIN_SERVER_VER_PROTOBUF_HISTORICAL_DATA,     # CANCEL_HEAD_TIMESTAMP
+        89: MIN_SERVER_VER_PROTOBUF_HISTORICAL_DATA,     # REQ_HISTOGRAM_DATA
+        90: MIN_SERVER_VER_PROTOBUF_HISTORICAL_DATA,     # CANCEL_HISTOGRAM_DATA
+        96: MIN_SERVER_VER_PROTOBUF_HISTORICAL_DATA,     # REQ_HISTORICAL_TICKS
+        97: MIN_SERVER_VER_PROTOBUF_HISTORICAL_DATA,     # REQ_TICK_BY_TICK_DATA
+        98: MIN_SERVER_VER_PROTOBUF_HISTORICAL_DATA,     # CANCEL_TICK_BY_TICK_DATA
+        12: MIN_SERVER_VER_PROTOBUF_NEWS_DATA,           # REQ_NEWS_BULLETINS
+        13: MIN_SERVER_VER_PROTOBUF_NEWS_DATA,           # CANCEL_NEWS_BULLETINS
+        84: MIN_SERVER_VER_PROTOBUF_NEWS_DATA,           # REQ_NEWS_ARTICLE
+        85: MIN_SERVER_VER_PROTOBUF_NEWS_DATA,           # REQ_NEWS_PROVIDERS
+        83: MIN_SERVER_VER_PROTOBUF_NEWS_DATA,           # REQ_HISTORICAL_NEWS
+        100: MIN_SERVER_VER_PROTOBUF_NEWS_DATA,          # REQ_WSH_META_DATA
+        101: MIN_SERVER_VER_PROTOBUF_NEWS_DATA,          # CANCEL_WSH_META_DATA
+        102: MIN_SERVER_VER_PROTOBUF_NEWS_DATA,          # REQ_WSH_EVENT_DATA
+        103: MIN_SERVER_VER_PROTOBUF_NEWS_DATA,          # CANCEL_WSH_EVENT_DATA
+        24: MIN_SERVER_VER_PROTOBUF_SCAN_DATA,           # REQ_SCANNER_PARAMETERS
+        22: MIN_SERVER_VER_PROTOBUF_SCAN_DATA,           # REQ_SCANNER_SUBSCRIPTION
+        23: MIN_SERVER_VER_PROTOBUF_SCAN_DATA,           # CANCEL_SCANNER_SUBSCRIPTION
+        52: MIN_SERVER_VER_PROTOBUF_SCAN_DATA,           # REQ_FUNDAMENTAL_DATA
+        53: MIN_SERVER_VER_PROTOBUF_SCAN_DATA,           # CANCEL_FUNDAMENTAL_DATA
+        92: MIN_SERVER_VER_PROTOBUF_SCAN_DATA,           # REQ_PNL
+        93: MIN_SERVER_VER_PROTOBUF_SCAN_DATA,           # CANCEL_PNL
+        94: MIN_SERVER_VER_PROTOBUF_SCAN_DATA,           # REQ_PNL_SINGLE
+        95: MIN_SERVER_VER_PROTOBUF_SCAN_DATA,           # CANCEL_PNL_SINGLE
+        18: MIN_SERVER_VER_PROTOBUF_REST_MESSAGES_1,     # REQ_FA
+        19: MIN_SERVER_VER_PROTOBUF_REST_MESSAGES_1,     # REPLACE_FA
+        78: MIN_SERVER_VER_PROTOBUF_REST_MESSAGES_2,     # REQ_SEC_DEF_OPT_PARAMS
+        79: MIN_SERVER_VER_PROTOBUF_REST_MESSAGES_2,     # REQ_SOFT_DOLLAR_TIERS
+        80: MIN_SERVER_VER_PROTOBUF_REST_MESSAGES_2,     # REQ_FAMILY_CODES
+        81: MIN_SERVER_VER_PROTOBUF_REST_MESSAGES_2,     # REQ_MATCHING_SYMBOLS
+        60: MIN_SERVER_VER_PROTOBUF_REST_MESSAGES_2,     # REQ_SMART_COMPONENTS
+        91: MIN_SERVER_VER_PROTOBUF_REST_MESSAGES_2,     # REQ_MARKET_RULE
+        104: MIN_SERVER_VER_PROTOBUF_REST_MESSAGES_2,    # REQ_USER_INFO
+        8: MIN_SERVER_VER_PROTOBUF_REST_MESSAGES_3,      # REQ_IDS
+        49: MIN_SERVER_VER_PROTOBUF_REST_MESSAGES_3,     # REQ_CURRENT_TIME
+        71: MIN_SERVER_VER_PROTOBUF_REST_MESSAGES_3,     # START_API
+        14: MIN_SERVER_VER_PROTOBUF_REST_MESSAGES_3,     # SET_SERVER_LOGLEVEL
+    }
 
     (DISCONNECTED, CONNECTING, CONNECTED) = range(3)
 
@@ -130,7 +239,7 @@ class Client:
         self._numBytesRecv = 0
         self._numMsgRecv = 0
         self._isThrottling = False
-        self._msgQ: deque[str] = deque()
+        self._msgQ: deque[str | bytes] = deque()
         self._timeQ: deque[float] = deque()
 
     def serverVersion(self) -> int:
@@ -270,7 +379,215 @@ class Client:
             msg.write('\0')
         self.sendMsg(msg.getvalue())
 
-    def sendMsg(self, msg: str):
+    def useProtoBuf(self, msgId: int) -> bool:
+        """True when the server supports protobuf encoding for this outbound message id."""
+        min_ver = self.PROTOBUF_MSG_IDS.get(msgId)
+        return min_ver is not None and self._serverVersion >= min_ver
+
+    def sendProto(self, msgId: int, proto_msg) -> None:
+        """Serialize and queue a protobuf outbound message."""
+        payload = proto_msg.SerializeToString()
+        self.sendMsg((msgId + self.PROTOBUF_MSG_ID).to_bytes(4, 'big') + payload)
+
+    @staticmethod
+    def _contractToProto(contract: 'Contract'):
+        from .protobuf.Contract_pb2 import Contract as ContractProto
+        p = ContractProto()
+        p.conId = contract.conId
+        p.symbol = contract.symbol
+        p.secType = contract.secType
+        p.lastTradeDateOrContractMonth = contract.lastTradeDateOrContractMonth
+        p.strike = contract.strike
+        p.right = contract.right
+        p.multiplier = float(contract.multiplier) if contract.multiplier else 0.0
+        p.exchange = contract.exchange
+        p.primaryExch = contract.primaryExchange
+        p.currency = contract.currency
+        p.localSymbol = contract.localSymbol
+        p.tradingClass = contract.tradingClass
+        p.secIdType = contract.secIdType
+        p.secId = contract.secId
+        p.description = contract.description
+        p.issuerId = contract.issuerId
+        p.comboLegsDescrip = contract.comboLegsDescrip
+        for leg in (contract.comboLegs or []):
+            leg_p = p.comboLegs.add()
+            leg_p.conId = leg.conId
+            leg_p.ratio = leg.ratio
+            leg_p.action = leg.action
+            leg_p.exchange = leg.exchange
+            leg_p.openClose = leg.openClose
+            leg_p.shortSaleSlot = leg.shortSaleSlot
+            leg_p.designatedLocation = leg.designatedLocation
+            leg_p.exemptCode = leg.exemptCode
+        if contract.deltaNeutralContract:
+            dnc = contract.deltaNeutralContract
+            p.deltaNeutralContract.conId = dnc.conId
+            p.deltaNeutralContract.delta = dnc.delta
+            p.deltaNeutralContract.price = dnc.price
+        return p
+
+    @staticmethod
+    def _orderToProto(order):
+        from .protobuf.Order_pb2 import Order as OrderProto
+        p = OrderProto()
+        p.clientId = order.clientId
+        p.orderId = order.orderId
+        p.permId = order.permId
+        p.parentId = order.parentId
+        p.action = order.action
+        p.totalQuantity = str(order.totalQuantity)
+        p.displaySize = order.displaySize
+        p.orderType = order.orderType
+        if order.lmtPrice != UNSET_DOUBLE:
+            p.lmtPrice = order.lmtPrice
+        if order.auxPrice != UNSET_DOUBLE:
+            p.auxPrice = order.auxPrice
+        p.tif = order.tif
+        p.account = order.account
+        p.settlingFirm = order.settlingFirm
+        p.clearingAccount = order.clearingAccount
+        p.clearingIntent = order.clearingIntent
+        p.allOrNone = order.allOrNone
+        p.blockOrder = order.blockOrder
+        p.hidden = order.hidden
+        p.outsideRth = order.outsideRth
+        p.sweepToFill = order.sweepToFill
+        if order.percentOffset != UNSET_DOUBLE:
+            p.percentOffset = order.percentOffset
+        p.trailingPercent = order.trailingPercent
+        p.trailStopPrice = order.trailStopPrice
+        if order.minQty != UNSET_INTEGER:
+            p.minQty = order.minQty
+        p.goodAfterTime = order.goodAfterTime
+        p.goodTillDate = order.goodTillDate
+        p.ocaGroup = order.ocaGroup
+        p.orderRef = order.orderRef
+        p.rule80A = order.rule80A
+        p.ocaType = order.ocaType
+        p.triggerMethod = order.triggerMethod
+        p.activeStartTime = order.activeStartTime
+        p.activeStopTime = order.activeStopTime
+        p.faGroup = order.faGroup
+        p.faMethod = order.faMethod
+        p.faPercentage = order.faPercentage
+        p.modelCode = order.modelCode
+        p.openClose = order.openClose
+        p.origin = order.origin
+        p.shortSaleSlot = order.shortSaleSlot
+        p.designatedLocation = order.designatedLocation
+        p.exemptCode = order.exemptCode
+        p.discretionaryAmt = order.discretionaryAmt
+        if order.volatility != UNSET_DOUBLE:
+            p.volatility = order.volatility
+        if order.volatilityType != UNSET_INTEGER:
+            p.volatilityType = order.volatilityType
+        p.deltaNeutralOrderType = order.deltaNeutralOrderType
+        if order.deltaNeutralAuxPrice != UNSET_DOUBLE:
+            p.deltaNeutralAuxPrice = order.deltaNeutralAuxPrice
+        p.deltaNeutralConId = order.deltaNeutralConId
+        p.deltaNeutralOpenClose = order.deltaNeutralOpenClose
+        p.deltaNeutralShortSale = order.deltaNeutralShortSale
+        p.deltaNeutralShortSaleSlot = order.deltaNeutralShortSaleSlot
+        p.deltaNeutralDesignatedLocation = order.deltaNeutralDesignatedLocation
+        p.deltaNeutralSettlingFirm = order.deltaNeutralSettlingFirm
+        p.deltaNeutralClearingAccount = order.deltaNeutralClearingAccount
+        p.deltaNeutralClearingIntent = order.deltaNeutralClearingIntent
+        if order.scaleInitLevelSize != UNSET_INTEGER:
+            p.scaleInitLevelSize = order.scaleInitLevelSize
+        if order.scaleSubsLevelSize != UNSET_INTEGER:
+            p.scaleSubsLevelSize = order.scaleSubsLevelSize
+        if order.scalePriceIncrement != UNSET_DOUBLE:
+            p.scalePriceIncrement = order.scalePriceIncrement
+        p.scaleAutoReset = order.scaleAutoReset
+        if order.scaleInitPosition != UNSET_INTEGER:
+            p.scaleInitPosition = order.scaleInitPosition
+        if order.scaleInitFillQty != UNSET_INTEGER:
+            p.scaleInitFillQty = order.scaleInitFillQty
+        p.scaleRandomPercent = order.scaleRandomPercent
+        p.scaleTable = order.scaleTable
+        p.hedgeType = order.hedgeType
+        p.hedgeParam = order.hedgeParam
+        p.algoStrategy = order.algoStrategy
+        for tv in (order.algoParams or []):
+            p.algoParams[tv.tag] = tv.value
+        p.algoId = order.algoId
+        for tv in (order.smartComboRoutingParams or []):
+            p.smartComboRoutingParams[tv.tag] = tv.value
+        p.whatIf = order.whatIf
+        p.transmit = order.transmit
+        p.overridePercentageConstraints = order.overridePercentageConstraints
+        p.notHeld = order.notHeld
+        p.solicited = order.solicited
+        p.randomizeSize = order.randomizeSize
+        p.randomizePrice = order.randomizePrice
+        p.referenceContractId = order.referenceContractId
+        p.peggedChangeAmount = order.peggedChangeAmount
+        p.isPeggedChangeAmountDecrease = order.isPeggedChangeAmountDecrease
+        p.referenceChangeAmount = order.referenceChangeAmount
+        p.referenceExchangeId = order.referenceExchangeId
+        p.adjustedOrderType = order.adjustedOrderType
+        if order.triggerPrice != UNSET_DOUBLE:
+            p.triggerPrice = order.triggerPrice
+        p.adjustedStopPrice = order.adjustedStopPrice
+        p.adjustedStopLimitPrice = order.adjustedStopLimitPrice
+        p.adjustedTrailingAmount = order.adjustedTrailingAmount
+        p.adjustableTrailingUnit = order.adjustableTrailingUnit
+        if order.lmtPriceOffset != UNSET_DOUBLE:
+            p.lmtPriceOffset = order.lmtPriceOffset
+        p.conditionsCancelOrder = order.conditionsCancelOrder
+        p.conditionsIgnoreRth = order.conditionsIgnoreRth
+        p.extOperator = order.extOperator
+        p.softDollarTier.name = order.softDollarTier.name
+        p.softDollarTier.value = order.softDollarTier.val
+        p.softDollarTier.displayName = order.softDollarTier.displayName
+        if order.cashQty != UNSET_DOUBLE:
+            p.cashQty = order.cashQty
+        p.mifid2DecisionMaker = order.mifid2DecisionMaker
+        p.mifid2DecisionAlgo = order.mifid2DecisionAlgo
+        p.mifid2ExecutionTrader = order.mifid2ExecutionTrader
+        p.mifid2ExecutionAlgo = order.mifid2ExecutionAlgo
+        p.dontUseAutoPriceForHedge = order.dontUseAutoPriceForHedge
+        p.isOmsContainer = order.isOmsContainer
+        p.discretionaryUpToLimitPrice = order.discretionaryUpToLimitPrice
+        p.autoCancelDate = order.autoCancelDate
+        if order.filledQuantity != UNSET_DOUBLE:
+            p.filledQuantity = str(order.filledQuantity)
+        p.refFuturesConId = order.refFuturesConId
+        p.autoCancelParent = order.autoCancelParent
+        p.shareholder = order.shareholder
+        p.imbalanceOnly = order.imbalanceOnly
+        p.routeMarketableToBbo = order.routeMarketableToBbo
+        p.parentPermId = order.parentPermId
+        p.usePriceMgmtAlgo = order.usePriceMgmtAlgo
+        if order.duration != UNSET_INTEGER:
+            p.duration = order.duration
+        if order.postToAts != UNSET_INTEGER:
+            p.postToAts = order.postToAts
+        p.advancedErrorOverride = order.advancedErrorOverride
+        p.manualOrderTime = order.manualOrderTime
+        if order.minTradeQty != UNSET_INTEGER:
+            p.minTradeQty = order.minTradeQty
+        if order.minCompeteSize != UNSET_INTEGER:
+            p.minCompeteSize = order.minCompeteSize
+        if order.competeAgainstBestOffset != UNSET_DOUBLE:
+            p.competeAgainstBestOffset = order.competeAgainstBestOffset
+        if order.midOffsetAtWhole != UNSET_DOUBLE:
+            p.midOffsetAtWhole = order.midOffsetAtWhole
+        if order.midOffsetAtHalf != UNSET_DOUBLE:
+            p.midOffsetAtHalf = order.midOffsetAtHalf
+        p.customerAccount = order.customerAccount
+        p.professionalCustomer = order.professionalCustomer
+        p.bondAccruedInterest = order.bondAccruedInterest
+        p.includeOvernight = order.includeOvernight
+        if order.manualOrderIndicator != UNSET_INTEGER:
+            p.manualOrderIndicator = order.manualOrderIndicator
+        p.submitter = order.submitter
+        if order.hedgeMaxSize != UNSET_DOUBLE:
+            p.hedgeMaxSize = order.hedgeMaxSize
+        return p
+
+    def sendMsg(self, msg: str | bytes):
         loop = getLoop()
         t = loop.time()
         times = self._timeQ
@@ -281,10 +598,21 @@ class Client:
             msgs.append(msg)
         while msgs and (len(times) < self.MaxRequests or not self.MaxRequests):
             msg = msgs.popleft()
-            self.conn.sendMsg(self._prefix(msg.encode()))
+            if isinstance(msg, bytes):
+                raw = msg
+            elif self._serverVersion >= self.MIN_SERVER_VER_PROTOBUF:
+                # v201+: msgId is a 4-byte big-endian integer, not ASCII
+                sep = msg.index('\0')
+                raw = int(msg[:sep]).to_bytes(4, 'big') + msg[sep + 1:].encode()
+            else:
+                raw = msg.encode()
+            self.conn.sendMsg(self._prefix(raw))
             times.append(t)
             if self._logger.isEnabledFor(logging.DEBUG):
-                self._logger.debug('>>> %s', msg[:-1].replace('\0', ','))
+                if isinstance(msg, str):
+                    self._logger.debug('>>> %s', msg[:-1].replace('\0', ','))
+                else:
+                    self._logger.debug('>>> <proto %d bytes>', len(msg))
         if msgs:
             if not self._isThrottling:
                 self._isThrottling = True
@@ -314,39 +642,65 @@ class Client:
         while True:
             if len(self._data) <= 4:
                 break
-            # 4 byte prefix tells the message length
+            # 4-byte prefix tells the message length
             msgEnd = 4 + struct.unpack('>I', self._data[:4])[0]
             if len(self._data) < msgEnd:
                 # insufficient data for now
                 break
-            msg = self._data[4:msgEnd].decode(errors='backslashreplace')
+            raw = self._data[4:msgEnd]
             self._data = self._data[msgEnd:]
-            fields = msg.split('\0')
-            fields.pop()  # pop off last empty element
             self._numMsgRecv += 1
 
-            if debug:
-                self._logger.debug('<<< %s', ','.join(fields))
+            if not self._serverVersion:
+                # Handshake: always the old ASCII NUL-delimited format
+                msg = raw.decode(errors='backslashreplace')
+                fields = msg.split('\0')
+                fields.pop()
+                if len(fields) == 2:
+                    version, _connTime = fields
+                    self._serverVersion = int(version)
+                    if self._serverVersion < self.MinClientVersion:
+                        self._onSocketDisconnected(
+                            'TWS/gateway version must be >= 972')
+                        return
+                    self.decoder.serverVersion = self._serverVersion
+                    self.connState = Client.CONNECTED
+                    self.startApi()
+                    self.wrapper.connectAck()
+                    self._logger.info(
+                        f'Logged on to server version {self._serverVersion}')
+                continue
 
-            if not self._serverVersion and len(fields) == 2:
-                # this concludes the handshake
-                version, _connTime = fields
-                self._serverVersion = int(version)
-                if self._serverVersion < self.MinClientVersion:
-                    self._onSocketDisconnected(
-                        'TWS/gateway version must be >= 972')
-                    return
-                self.decoder.serverVersion = self._serverVersion
-                self.connState = Client.CONNECTED
-                self.startApi()
-                self.wrapper.connectAck()
-                self._logger.info(
-                    f'Logged on to server version {self._serverVersion}')
+            # v201+: msgId is a raw 4-byte big-endian integer
+            # <v201: msgId is ASCII digits followed by \0
+            if self._serverVersion >= self.MIN_SERVER_VER_PROTOBUF:
+                msgId = int.from_bytes(raw[:4], 'big')
+                body = raw[4:]
             else:
+                sep = raw.index(b'\0')
+                msgId = int(raw[:sep])
+                body = raw[sep + 1:]
+
+            if msgId > self.PROTOBUF_MSG_ID:
+                # protobuf message
+                realMsgId = msgId - self.PROTOBUF_MSG_ID
+                if debug:
+                    self._logger.debug('<<< proto msgId=%d %d bytes', realMsgId, len(body))
                 if not self._apiReady:
-                    # snoop for nextValidId and managedAccounts response,
-                    # when both are in then the client is ready
-                    msgId = int(fields[0])
+                    self._snoopProtoApiReady(realMsgId, body)
+                self.decoder.interpretProtoBuf(realMsgId, body)
+            else:
+                # legacy NUL-delimited message
+                msg = body.decode(errors='backslashreplace')
+                fields_body = msg.split('\0')
+                if fields_body and fields_body[-1] == '':
+                    fields_body.pop()
+                fields = [str(msgId)] + fields_body
+
+                if debug:
+                    self._logger.debug('<<< %s', ','.join(fields))
+
+                if not self._apiReady:
                     if msgId == 9:
                         _, _, validId = fields
                         self.updateReqId(int(validId))
@@ -358,11 +712,30 @@ class Client:
                         self._apiReady = True
                         self.apiStart.emit()
 
-                # decode and handle the message
                 self.decoder.interpret(fields)
 
         if self._tcpDataProcessed:
             self._tcpDataProcessed()
+
+    def _snoopProtoApiReady(self, msgId: int, payload: bytes) -> None:
+        """Snoop nextValidId and managedAccounts from protobuf messages for _apiReady."""
+        try:
+            if msgId == 9:  # NEXT_VALID_ID
+                from .protobuf.NextValidId_pb2 import NextValidId
+                msg = NextValidId()
+                msg.ParseFromString(payload)
+                self.updateReqId(msg.orderId)
+                self._hasReqId = True
+            elif msgId == 15:  # MANAGED_ACCTS
+                from .protobuf.ManagedAccounts_pb2 import ManagedAccounts
+                msg = ManagedAccounts()
+                msg.ParseFromString(payload)
+                self._accounts = [a for a in msg.accountsList.split(',') if a]
+            if self._hasReqId and self._accounts:
+                self._apiReady = True
+                self.apiStart.emit()
+        except Exception:
+            pass
 
     def _onSocketDisconnected(self, msg):
         wasReady = self.isReady()
@@ -388,6 +761,16 @@ class Client:
     def reqMktData(
             self, reqId, contract, genericTickList, snapshot,
             regulatorySnapshot, mktDataOptions):
+        if self.useProtoBuf(1):
+            from .protobuf.MarketDataRequest_pb2 import MarketDataRequest
+            req = MarketDataRequest()
+            req.reqId = reqId
+            req.contract.CopyFrom(self._contractToProto(contract))
+            req.genericTickList = genericTickList
+            req.snapshot = snapshot
+            req.regulatorySnapshot = regulatorySnapshot
+            self.sendProto(1, req)
+            return
         fields = [1, 11, reqId, contract]
 
         if contract.secType == 'BAG':
@@ -407,9 +790,23 @@ class Client:
         self.send(*fields)
 
     def cancelMktData(self, reqId):
+        if self.useProtoBuf(2):
+            from .protobuf.CancelMarketData_pb2 import CancelMarketData
+            req = CancelMarketData()
+            req.reqId = reqId
+            self.sendProto(2, req)
+            return
         self.send(2, 2, reqId)
 
     def placeOrder(self, orderId, contract, order):
+        if self.useProtoBuf(3):
+            from .protobuf.PlaceOrderRequest_pb2 import PlaceOrderRequest
+            req = PlaceOrderRequest()
+            req.orderId = orderId
+            req.contract.CopyFrom(self._contractToProto(contract))
+            req.order.CopyFrom(self._orderToProto(order))
+            self.sendProto(3, req)
+            return
         version = self.serverVersion()
         fields = [
             3, orderId,
@@ -620,13 +1017,38 @@ class Client:
                     fields += [order.midOffsetAtWhole, order.midOffsetAtHalf]
             elif order.orderType in ('PEG MID', 'PEGMID'):
                 fields += [order.midOffsetAtWhole, order.midOffsetAtHalf]
+        if version >= self.MIN_SERVER_VER_CUSTOMER_ACCOUNT:
+            fields += [order.customerAccount]
+        if version >= self.MIN_SERVER_VER_PROFESSIONAL_CUSTOMER:
+            fields += [order.professionalCustomer]
+        if self.MIN_SERVER_VER_RFQ_FIELDS <= version < self.MIN_SERVER_VER_UNDO_RFQ_FIELDS:
+            fields += ['', UNSET_INTEGER]  # obsolete rfq fields, send empty
+        if version >= self.MIN_SERVER_VER_INCLUDE_OVERNIGHT:
+            fields += [order.includeOvernight]
+        if version >= self.MIN_SERVER_VER_CME_TAGGING_FIELDS:
+            fields += [order.manualOrderIndicator]
+        if version >= self.MIN_SERVER_VER_IMBALANCE_ONLY:
+            fields += [order.imbalanceOnly]
 
         self.send(*fields)
 
-    def cancelOrder(self, orderId, manualCancelOrderTime=''):
+    def cancelOrder(self, orderId, manualCancelOrderTime='', extOperator='', manualOrderIndicator=UNSET_INTEGER):
+        if self.useProtoBuf(4):
+            from .protobuf.CancelOrderRequest_pb2 import CancelOrderRequest
+            req = CancelOrderRequest()
+            req.orderId = orderId
+            req.orderCancel.manualOrderCancelTime = manualCancelOrderTime
+            req.orderCancel.extOperator = extOperator
+            if manualOrderIndicator != UNSET_INTEGER:
+                req.orderCancel.manualOrderIndicator = manualOrderIndicator
+            self.sendProto(4, req)
+            return
+        version = self.serverVersion()
         fields = [4, 1, orderId]
-        if self.serverVersion() >= 169:
+        if version >= 169:
             fields += [manualCancelOrderTime]
+        if version >= self.MIN_SERVER_VER_CME_TAGGING_FIELDS:
+            fields += [extOperator, manualOrderIndicator]
         self.send(*fields)
 
     def reqOpenOrders(self):
@@ -636,7 +1058,20 @@ class Client:
         self.send(6, 2, subscribe, acctCode)
 
     def reqExecutions(self, reqId, execFilter):
-        self.send(
+        if self.useProtoBuf(7):
+            from .protobuf.ExecutionRequest_pb2 import ExecutionRequest
+            req = ExecutionRequest()
+            req.reqId = reqId
+            req.executionFilter.clientId = execFilter.clientId
+            req.executionFilter.acctCode = execFilter.acctCode
+            req.executionFilter.time = execFilter.time
+            req.executionFilter.symbol = execFilter.symbol
+            req.executionFilter.secType = execFilter.secType
+            req.executionFilter.exchange = execFilter.exchange
+            req.executionFilter.side = execFilter.side
+            self.sendProto(7, req)
+            return
+        fields = [
             7, 3, reqId,
             execFilter.clientId,
             execFilter.acctCode,
@@ -644,7 +1079,10 @@ class Client:
             execFilter.symbol,
             execFilter.secType,
             execFilter.exchange,
-            execFilter.side)
+            execFilter.side]
+        if self.serverVersion() >= self.MIN_SERVER_VER_PARAMETRIZED_DAYS_OF_EXECUTIONS:
+            fields += [getattr(execFilter, 'lastNDays', '')]
+        self.send(*fields)
 
     def reqIds(self, numIds):
         self.send(8, 1, numIds)

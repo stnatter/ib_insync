@@ -157,6 +157,19 @@ class Order:
     competeAgainstBestOffset: float = UNSET_DOUBLE
     midOffsetAtWhole: float = UNSET_DOUBLE
     midOffsetAtHalf: float = UNSET_DOUBLE
+    customerAccount: str = ''
+    professionalCustomer: bool = False
+    bondAccruedInterest: str = ''
+    includeOvernight: bool = False
+    manualOrderIndicator: int = UNSET_INTEGER
+    submitter: str = ''
+    hedgeMaxSize: float = UNSET_DOUBLE
+    deactivate: bool = False
+    postOnly: bool = False
+    allowPreOpen: bool = False
+    ignoreOpenAuction: bool = False
+    seekPriceImprovement: bool = False
+    whatIfType: int = 0
 
     def __repr__(self):
         attrs = dataclassNonDefaults(self)

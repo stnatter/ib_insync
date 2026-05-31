@@ -102,6 +102,7 @@ class Contract:
     comboLegsDescrip: str = ''
     comboLegs: list['ComboLeg'] = field(default_factory=list)
     deltaNeutralContract: 'DeltaNeutralContract | None' = None
+    lastTradeDate: str = ''
 
     @staticmethod
     def create(**kwargs) -> 'Contract':
@@ -516,6 +517,24 @@ class ContractDetails:
     nextOptionType: str = ''
     nextOptionPartial: bool = False
     notes: str = ''
+    fundName: str = ''
+    fundFamily: str = ''
+    fundType: str = ''
+    fundFrontLoad: str = ''
+    fundBackLoad: str = ''
+    fundBackLoadTimeInterval: str = ''
+    fundManagementFee: str = ''
+    fundClosed: bool = False
+    fundClosedForNewInvestors: bool = False
+    fundClosedForNewMoney: bool = False
+    fundNotifyAmount: str = ''
+    fundMinimumInitialPurchase: str = ''
+    fundSubsequentMinimumPurchase: str = ''
+    fundBlueSkyStates: str = ''
+    fundBlueSkyTerritories: str = ''
+    fundDistributionPolicyIndicator: str = ''
+    fundAssetType: str = ''
+    ineligibilityReasonList: list[tuple[str, str]] = field(default_factory=list)
 
     def tradingSessions(self) -> list[TradingSession]:
         return self._parseSessions(self.tradingHours)

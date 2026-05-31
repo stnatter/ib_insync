@@ -25,6 +25,7 @@ classifiers = [
 ]
 dependencies = [
     "eventkit @ git+https://github.com/stnatter/eventkit.git",
+    "protobuf>=6.33",
 ]
 
 [project.optional-dependencies]
@@ -42,7 +43,7 @@ Repository = "https://github.com/stnatter/ib_insync"
 Issues = "https://github.com/stnatter/ib_insync/issues"
 
 [tool.setuptools]
-packages = ["ib_insync"]
+packages = ["ib_insync", "ib_insync.protobuf"]
 include-package-data = true
 
 [tool.setuptools.package-data]
