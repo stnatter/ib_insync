@@ -292,7 +292,7 @@ def _contract_details_from_proto(contract_p, details_p) -> ContractDetails:
     cd.fundClosedForNewMoney = details_p.fundClosedForNewMoney
     cd.fundNotifyAmount = details_p.fundNotifyAmount
     cd.fundMinimumInitialPurchase = details_p.fundMinimumInitialPurchase
-    cd.fundSubsequentMinimumPurchase = details_p.fundSubsequentMinimumPurchase
+    cd.fundSubsequentMinimumPurchase = details_p.fundMinimumSubsequentPurchase
     cd.fundBlueSkyStates = details_p.fundBlueSkyStates
     cd.fundBlueSkyTerritories = details_p.fundBlueSkyTerritories
     return cd

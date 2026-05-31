@@ -393,38 +393,70 @@ class Client:
     def _contractToProto(contract: 'Contract'):
         from .protobuf.Contract_pb2 import Contract as ContractProto
         p = ContractProto()
-        p.conId = contract.conId
-        p.symbol = contract.symbol
-        p.secType = contract.secType
-        p.lastTradeDateOrContractMonth = contract.lastTradeDateOrContractMonth
-        p.strike = contract.strike
-        p.right = contract.right
-        p.multiplier = float(contract.multiplier) if contract.multiplier else 0.0
-        p.exchange = contract.exchange
-        p.primaryExch = contract.primaryExchange
-        p.currency = contract.currency
-        p.localSymbol = contract.localSymbol
-        p.tradingClass = contract.tradingClass
-        p.secIdType = contract.secIdType
-        p.secId = contract.secId
-        p.description = contract.description
-        p.issuerId = contract.issuerId
-        p.comboLegsDescrip = contract.comboLegsDescrip
+        # Only set fields with non-default values — the gateway distinguishes
+        # "not provided" from "explicitly 0/empty" for optional proto fields.
+        if contract.conId:
+            p.conId = contract.conId
+        if contract.symbol:
+            p.symbol = contract.symbol
+        if contract.secType:
+            p.secType = contract.secType
+        if contract.lastTradeDateOrContractMonth:
+            p.lastTradeDateOrContractMonth = contract.lastTradeDateOrContractMonth
+        if getattr(contract, 'lastTradeDate', ''):
+            p.lastTradeDate = contract.lastTradeDate
+        if contract.strike:
+            p.strike = contract.strike
+        if contract.right:
+            p.right = contract.right
+        if contract.multiplier:
+            p.multiplier = float(contract.multiplier)
+        if contract.exchange:
+            p.exchange = contract.exchange
+        if contract.primaryExchange:
+            p.primaryExch = contract.primaryExchange
+        if contract.currency:
+            p.currency = contract.currency
+        if contract.localSymbol:
+            p.localSymbol = contract.localSymbol
+        if contract.tradingClass:
+            p.tradingClass = contract.tradingClass
+        if contract.secIdType:
+            p.secIdType = contract.secIdType
+        if contract.secId:
+            p.secId = contract.secId
+        if contract.description:
+            p.description = contract.description
+        if contract.issuerId:
+            p.issuerId = contract.issuerId
+        if contract.comboLegsDescrip:
+            p.comboLegsDescrip = contract.comboLegsDescrip
         for leg in (contract.comboLegs or []):
             leg_p = p.comboLegs.add()
-            leg_p.conId = leg.conId
-            leg_p.ratio = leg.ratio
-            leg_p.action = leg.action
-            leg_p.exchange = leg.exchange
-            leg_p.openClose = leg.openClose
-            leg_p.shortSaleSlot = leg.shortSaleSlot
-            leg_p.designatedLocation = leg.designatedLocation
-            leg_p.exemptCode = leg.exemptCode
+            if leg.conId:
+                leg_p.conId = leg.conId
+            if leg.ratio:
+                leg_p.ratio = leg.ratio
+            if leg.action:
+                leg_p.action = leg.action
+            if leg.exchange:
+                leg_p.exchange = leg.exchange
+            if leg.openClose:
+                leg_p.openClose = leg.openClose
+            if leg.shortSaleSlot:
+                leg_p.shortSaleSlot = leg.shortSaleSlot
+            if leg.designatedLocation:
+                leg_p.designatedLocation = leg.designatedLocation
+            if leg.exemptCode != -1:
+                leg_p.exemptCode = leg.exemptCode
         if contract.deltaNeutralContract:
             dnc = contract.deltaNeutralContract
-            p.deltaNeutralContract.conId = dnc.conId
-            p.deltaNeutralContract.delta = dnc.delta
-            p.deltaNeutralContract.price = dnc.price
+            if dnc.conId:
+                p.deltaNeutralContract.conId = dnc.conId
+            if dnc.delta:
+                p.deltaNeutralContract.delta = dnc.delta
+            if dnc.price:
+                p.deltaNeutralContract.price = dnc.price
         return p
 
     @staticmethod
@@ -1088,6 +1120,13 @@ class Client:
         self.send(8, 1, numIds)
 
     def reqContractDetails(self, reqId, contract):
+        if self.useProtoBuf(9):
+            from .protobuf.ContractDataRequest_pb2 import ContractDataRequest
+            req = ContractDataRequest()
+            req.reqId = reqId
+            req.contract.CopyFrom(self._contractToProto(contract))
+            self.sendProto(9, req)
+            return
         fields = [
             9, 8, reqId,
             contract,
