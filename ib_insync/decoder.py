@@ -14,7 +14,7 @@ from .objects import (
     HistoricalTickLast, NewsProvider, PriceIncrement, SmartComponent,
     SoftDollarTier, TagValue, TickAttribBidAsk, TickAttribLast)
 from .order import Order, OrderComboLeg, OrderCondition, OrderState
-from .util import UNSET_DOUBLE, ZoneInfo, parseIBDatetime
+from .util import UNSET_DOUBLE, UNSET_INTEGER, ZoneInfo, parseIBDatetime
 from .wrapper import Wrapper
 
 # Lazy import helpers for protobuf — only imported when a protobuf message arrives
@@ -86,7 +86,7 @@ def _order_from_proto(p) -> Order:
     o.percentOffset = p.percentOffset if p.HasField('percentOffset') else UNSET_DOUBLE
     o.trailingPercent = p.trailingPercent if p.HasField('trailingPercent') else UNSET_DOUBLE
     o.trailStopPrice = p.trailStopPrice if p.HasField('trailStopPrice') else UNSET_DOUBLE
-    o.minQty = p.minQty if p.HasField('minQty') else UNSET_DOUBLE
+    o.minQty = p.minQty if p.HasField('minQty') else UNSET_INTEGER
     o.goodAfterTime = p.goodAfterTime
     o.goodTillDate = p.goodTillDate
     o.ocaGroup = p.ocaGroup
@@ -100,9 +100,9 @@ def _order_from_proto(p) -> Order:
     o.faMethod = p.faMethod
     o.faPercentage = p.faPercentage
     o.volatility = p.volatility if p.HasField('volatility') else UNSET_DOUBLE
-    o.volatilityType = p.volatilityType if p.HasField('volatilityType') else UNSET_DOUBLE
+    o.volatilityType = p.volatilityType if p.HasField('volatilityType') else UNSET_INTEGER
     o.continuousUpdate = p.continuousUpdate
-    o.referencePriceType = p.referencePriceType if p.HasField('referencePriceType') else UNSET_DOUBLE
+    o.referencePriceType = p.referencePriceType if p.HasField('referencePriceType') else UNSET_INTEGER
     o.deltaNeutralOrderType = p.deltaNeutralOrderType
     o.deltaNeutralAuxPrice = p.deltaNeutralAuxPrice if p.HasField('deltaNeutralAuxPrice') else UNSET_DOUBLE
     o.deltaNeutralConId = p.deltaNeutralConId
@@ -110,15 +110,15 @@ def _order_from_proto(p) -> Order:
     o.deltaNeutralShortSale = p.deltaNeutralShortSale
     o.deltaNeutralShortSaleSlot = p.deltaNeutralShortSaleSlot
     o.deltaNeutralDesignatedLocation = p.deltaNeutralDesignatedLocation
-    o.scaleInitLevelSize = p.scaleInitLevelSize if p.HasField('scaleInitLevelSize') else UNSET_DOUBLE
-    o.scaleSubsLevelSize = p.scaleSubsLevelSize if p.HasField('scaleSubsLevelSize') else UNSET_DOUBLE
+    o.scaleInitLevelSize = p.scaleInitLevelSize if p.HasField('scaleInitLevelSize') else UNSET_INTEGER
+    o.scaleSubsLevelSize = p.scaleSubsLevelSize if p.HasField('scaleSubsLevelSize') else UNSET_INTEGER
     o.scalePriceIncrement = p.scalePriceIncrement if p.HasField('scalePriceIncrement') else UNSET_DOUBLE
     o.scalePriceAdjustValue = p.scalePriceAdjustValue if p.HasField('scalePriceAdjustValue') else UNSET_DOUBLE
-    o.scalePriceAdjustInterval = p.scalePriceAdjustInterval if p.HasField('scalePriceAdjustInterval') else UNSET_DOUBLE
+    o.scalePriceAdjustInterval = p.scalePriceAdjustInterval if p.HasField('scalePriceAdjustInterval') else UNSET_INTEGER
     o.scaleProfitOffset = p.scaleProfitOffset if p.HasField('scaleProfitOffset') else UNSET_DOUBLE
     o.scaleAutoReset = p.scaleAutoReset
-    o.scaleInitPosition = p.scaleInitPosition if p.HasField('scaleInitPosition') else UNSET_DOUBLE
-    o.scaleInitFillQty = p.scaleInitFillQty if p.HasField('scaleInitFillQty') else UNSET_DOUBLE
+    o.scaleInitPosition = p.scaleInitPosition if p.HasField('scaleInitPosition') else UNSET_INTEGER
+    o.scaleInitFillQty = p.scaleInitFillQty if p.HasField('scaleInitFillQty') else UNSET_INTEGER
     o.scaleRandomPercent = p.scaleRandomPercent
     o.scaleTable = p.scaleTable
     o.hedgeType = p.hedgeType
@@ -185,12 +185,12 @@ def _order_from_proto(p) -> Order:
     o.routeMarketableToBbo = p.routeMarketableToBbo
     o.parentPermId = p.parentPermId
     o.usePriceMgmtAlgo = p.usePriceMgmtAlgo
-    o.duration = p.duration if p.HasField('duration') else UNSET_DOUBLE
-    o.postToAts = p.postToAts if p.HasField('postToAts') else UNSET_DOUBLE
+    o.duration = p.duration if p.HasField('duration') else UNSET_INTEGER
+    o.postToAts = p.postToAts if p.HasField('postToAts') else UNSET_INTEGER
     o.advancedErrorOverride = p.advancedErrorOverride
     o.manualOrderTime = p.manualOrderTime
-    o.minTradeQty = p.minTradeQty if p.HasField('minTradeQty') else UNSET_DOUBLE
-    o.minCompeteSize = p.minCompeteSize if p.HasField('minCompeteSize') else UNSET_DOUBLE
+    o.minTradeQty = p.minTradeQty if p.HasField('minTradeQty') else UNSET_INTEGER
+    o.minCompeteSize = p.minCompeteSize if p.HasField('minCompeteSize') else UNSET_INTEGER
     o.competeAgainstBestOffset = p.competeAgainstBestOffset if p.HasField('competeAgainstBestOffset') else UNSET_DOUBLE
     o.midOffsetAtWhole = p.midOffsetAtWhole if p.HasField('midOffsetAtWhole') else UNSET_DOUBLE
     o.midOffsetAtHalf = p.midOffsetAtHalf if p.HasField('midOffsetAtHalf') else UNSET_DOUBLE
@@ -198,7 +198,7 @@ def _order_from_proto(p) -> Order:
     o.professionalCustomer = p.professionalCustomer
     o.bondAccruedInterest = p.bondAccruedInterest
     o.includeOvernight = p.includeOvernight
-    o.manualOrderIndicator = p.manualOrderIndicator if p.HasField('manualOrderIndicator') else UNSET_DOUBLE
+    o.manualOrderIndicator = p.manualOrderIndicator if p.HasField('manualOrderIndicator') else UNSET_INTEGER
     o.submitter = p.submitter
     o.hedgeMaxSize = p.hedgeMaxSize if p.HasField('hedgeMaxSize') else UNSET_DOUBLE
     for cond_p in p.conditions:
@@ -258,8 +258,8 @@ def _contract_details_from_proto(contract_p, details_p) -> ContractDetails:
     cd.minTick = details_p.minTick
     cd.orderTypes = details_p.orderTypes
     cd.validExchanges = details_p.validExchanges
-    cd.priceMagnifier = details_p.priceMagnifier
-    cd.underConId = details_p.underConId
+    cd.priceMagnifier = int(details_p.priceMagnifier)
+    cd.underConId = int(details_p.underConId)
     cd.longName = details_p.longName
     cd.contractMonth = details_p.contractMonth
     cd.industry = details_p.industry
@@ -269,9 +269,9 @@ def _contract_details_from_proto(contract_p, details_p) -> ContractDetails:
     cd.tradingHours = details_p.tradingHours
     cd.liquidHours = details_p.liquidHours
     cd.evRule = details_p.evRule
-    cd.evMultiplier = details_p.evMultiplier
+    cd.evMultiplier = int(details_p.evMultiplier)
     cd.secIdList = [TagValue(k, v) for k, v in details_p.secIdList.items()]
-    cd.aggGroup = details_p.aggGroup
+    cd.aggGroup = int(details_p.aggGroup)
     cd.underSymbol = details_p.underSymbol
     cd.underSecType = details_p.underSecType
     cd.marketRuleIds = details_p.marketRuleIds
@@ -318,7 +318,7 @@ def _execution_from_proto(p) -> Execution:
     e.price = p.price
     e.permId = p.permId
     e.clientId = p.clientId
-    e.isLiquidation = p.isLiquidation
+    e.liquidation = p.isLiquidation
     e.cumQty = float(p.cumQty) if p.cumQty else 0.0
     e.avgPrice = p.avgPrice
     e.orderRef = p.orderRef
@@ -598,7 +598,9 @@ class Decoder:
         attrib.canAutoExecute = bool(p.attrMask & 1)
         attrib.pastLimit = bool(p.attrMask & 2)
         attrib.preOpen = bool(p.attrMask & 4)
-        self.wrapper.tickPrice(p.reqId, p.tickType, p.price, attrib)
+        tick_price = getattr(self.wrapper, 'tickPrice', None)
+        if tick_price:
+            tick_price(p.reqId, p.tickType, p.price, attrib)
         size_tick = self._PRICE_TO_SIZE_TICK.get(p.tickType)
         if size_tick is not None and p.HasField('size'):
             self.wrapper.tickSize(p.reqId, size_tick, float(p.size) if p.size else 0.0)
@@ -802,13 +804,13 @@ class Decoder:
         if p.HasField('historicalTickLast'):
             t = p.historicalTickLast
             a = t.tickAttribLast
-            attrib = TickAttribLast(a.pastLimit, a.unreported)
-            self.wrapper.tickByTickAllLast(p.reqId, tick_type, t.time, t.price, t.size, attrib, t.exchange, t.specialConditions)
+            attrib_last = TickAttribLast(a.pastLimit, a.unreported)
+            self.wrapper.tickByTickAllLast(p.reqId, tick_type, t.time, t.price, t.size, attrib_last, t.exchange, t.specialConditions)
         elif p.HasField('historicalTickBidAsk'):
             t = p.historicalTickBidAsk
             a = t.tickAttribBidAsk
-            attrib = TickAttribBidAsk(a.bidPastLow, a.askPastHigh)
-            self.wrapper.tickByTickBidAsk(p.reqId, t.time, t.priceBid, t.priceAsk, t.sizeBid, t.sizeAsk, attrib)
+            attrib_bidask = TickAttribBidAsk(a.bidPastLow, a.askPastHigh)
+            self.wrapper.tickByTickBidAsk(p.reqId, t.time, t.priceBid, t.priceAsk, t.sizeBid, t.sizeAsk, attrib_bidask)
         elif p.HasField('historicalTickMidPoint'):
             t = p.historicalTickMidPoint
             self.wrapper.tickByTickMidPoint(p.reqId, t.time, t.price)
@@ -862,32 +864,14 @@ class Decoder:
     def _proto_scanner_data(self, payload: bytes) -> None:
         p = _pb('ScannerData')()
         p.ParseFromString(payload)
-        from .contract import ScanData
-        items = []
         for el in p.scannerDataElement:
-            cd = _contract_details_from_proto(el.contract, type('_CD', (), {
-                'marketName': el.marketName, 'minTick': 0, 'orderTypes': '',
-                'validExchanges': '', 'priceMagnifier': 0, 'underConId': 0,
-                'longName': '', 'contractMonth': '', 'industry': '', 'category': '',
-                'subcategory': '', 'timeZoneId': '', 'tradingHours': '',
-                'liquidHours': '', 'evRule': '', 'evMultiplier': 0,
-                'secIdList': {}, 'aggGroup': 0, 'underSymbol': '',
-                'underSecType': '', 'marketRuleIds': '', 'realExpirationDate': '',
-                'stockType': '', 'minSize': 0, 'sizeIncrement': 0,
-                'suggestedSizeIncrement': 0,
-                'fundName': '', 'fundFamily': '', 'fundType': '',
-                'fundFrontLoad': '', 'fundBackLoad': '', 'fundBackLoadTimeInterval': '',
-                'fundManagementFee': '', 'fundClosed': False,
-                'fundClosedForNewInvestors': False, 'fundClosedForNewMoney': False,
-                'fundNotifyAmount': '', 'fundMinimumInitialPurchase': '',
-                'fundSubsequentMinimumPurchase': '', 'fundBlueSkyStates': '',
-                'fundBlueSkyTerritories': '',
-                'HasField': lambda _: False,
-            })())
-            items.append(ScanData(rank=el.rank, contractDetails=cd,
-                                  distance=el.distance, benchmark=el.benchmark,
-                                  projection=el.projection, legsStr=el.comboKey))
-        self.wrapper.scannerData(p.reqId, items)
+            cd = ContractDetails()
+            cd.contract = _contract_from_proto(el.contract)
+            cd.marketName = el.marketName
+            self.wrapper.scannerData(
+                p.reqId, el.rank, cd,
+                el.distance, el.benchmark, el.projection, el.comboKey)
+        self.wrapper.scannerDataEnd(p.reqId)
 
     def _proto_fundamental_data(self, payload: bytes) -> None:
         p = _pb('FundamentalsData')()
@@ -904,7 +888,7 @@ class Decoder:
     def _proto_pnl_single(self, payload: bytes) -> None:
         p = _pb('PnLSingle')()
         p.ParseFromString(payload)
-        self.wrapper.pnlSingle(p.reqId, float(p.position) if p.position else 0.0, p.dailyPnL,
+        self.wrapper.pnlSingle(p.reqId, int(float(p.position)) if p.position else 0, p.dailyPnL,
                                p.unrealizedPnL if p.HasField('unrealizedPnL') else UNSET_DOUBLE,
                                p.realizedPnL if p.HasField('realizedPnL') else UNSET_DOUBLE,
                                p.value if p.HasField('value') else UNSET_DOUBLE)
@@ -917,7 +901,9 @@ class Decoder:
     def _proto_replace_fa_end(self, payload: bytes) -> None:
         p = _pb('ReplaceFAEnd')()
         p.ParseFromString(payload)
-        self.wrapper.replaceFAEnd(p.reqId, p.text)
+        replace_fa_end = getattr(self.wrapper, 'replaceFAEnd', None)
+        if replace_fa_end:
+            replace_fa_end(p.reqId, p.text)
 
     def _proto_commission_report(self, payload: bytes) -> None:
         p = _pb('CommissionAndFeesReport')()
@@ -929,7 +915,7 @@ class Decoder:
         report.realizedPNL = p.realizedPNL
         report.yield_ = p.bondYield
         report.yieldRedemptionDate = p.yieldRedemptionDate
-        self.wrapper.commissionAndFeesReport(report)
+        self.wrapper.commissionReport(report)
 
     def _proto_historical_schedule(self, payload: bytes) -> None:
         p = _pb('HistoricalSchedule')()
@@ -940,12 +926,16 @@ class Decoder:
     def _proto_reroute_mkt_data(self, payload: bytes) -> None:
         p = _pb('RerouteMarketDataRequest')()
         p.ParseFromString(payload)
-        self.wrapper.rerouteMktDataReq(p.reqId, p.conId, p.exchange)
+        reroute = getattr(self.wrapper, 'rerouteMktDataReq', None)
+        if reroute:
+            reroute(p.reqId, p.conId, p.exchange)
 
     def _proto_reroute_mkt_depth(self, payload: bytes) -> None:
         p = _pb('RerouteMarketDepthRequest')()
         p.ParseFromString(payload)
-        self.wrapper.rerouteMktDepthReq(p.reqId, p.conId, p.exchange)
+        reroute = getattr(self.wrapper, 'rerouteMktDepthReq', None)
+        if reroute:
+            reroute(p.reqId, p.conId, p.exchange)
 
     def _proto_sec_def_opt_param(self, payload: bytes) -> None:
         p = _pb('SecDefOptParameter')()
@@ -1019,7 +1009,7 @@ class Decoder:
     def _proto_current_time(self, payload: bytes) -> None:
         p = _pb('CurrentTime')()
         p.ParseFromString(payload)
-        self.wrapper.currentTime(p.time)
+        self.wrapper.currentTime(p.currentTime)
 
     _protoHandlers: dict[int, Any] = {
         1: _proto_tick_price,

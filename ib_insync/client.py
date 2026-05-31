@@ -391,7 +391,7 @@ class Client:
 
     @staticmethod
     def _contractToProto(contract: 'Contract'):
-        from .protobuf.Contract_pb2 import Contract as ContractProto
+        from .protobuf.Contract_pb2 import Contract as ContractProto  # type: ignore[attr-defined]
         p = ContractProto()
         # Only set fields with non-default values — the gateway distinguishes
         # "not provided" from "explicitly 0/empty" for optional proto fields.
@@ -461,7 +461,7 @@ class Client:
 
     @staticmethod
     def _orderToProto(order):
-        from .protobuf.Order_pb2 import Order as OrderProto
+        from .protobuf.Order_pb2 import Order as OrderProto  # type: ignore[attr-defined]
         p = OrderProto()
         p.clientId = order.clientId
         p.orderId = order.orderId
@@ -753,13 +753,13 @@ class Client:
         """Snoop nextValidId and managedAccounts from protobuf messages for _apiReady."""
         try:
             if msgId == 9:  # NEXT_VALID_ID
-                from .protobuf.NextValidId_pb2 import NextValidId
+                from .protobuf.NextValidId_pb2 import NextValidId  # type: ignore[attr-defined]
                 msg = NextValidId()
                 msg.ParseFromString(payload)
                 self.updateReqId(msg.orderId)
                 self._hasReqId = True
             elif msgId == 15:  # MANAGED_ACCTS
-                from .protobuf.ManagedAccounts_pb2 import ManagedAccounts
+                from .protobuf.ManagedAccounts_pb2 import ManagedAccounts  # type: ignore[attr-defined]
                 msg = ManagedAccounts()
                 msg.ParseFromString(payload)
                 self._accounts = [a for a in msg.accountsList.split(',') if a]
@@ -794,7 +794,7 @@ class Client:
             self, reqId, contract, genericTickList, snapshot,
             regulatorySnapshot, mktDataOptions):
         if self.useProtoBuf(1):
-            from .protobuf.MarketDataRequest_pb2 import MarketDataRequest
+            from .protobuf.MarketDataRequest_pb2 import MarketDataRequest  # type: ignore[attr-defined]
             req = MarketDataRequest()
             req.reqId = reqId
             req.contract.CopyFrom(self._contractToProto(contract))
@@ -823,7 +823,7 @@ class Client:
 
     def cancelMktData(self, reqId):
         if self.useProtoBuf(2):
-            from .protobuf.CancelMarketData_pb2 import CancelMarketData
+            from .protobuf.CancelMarketData_pb2 import CancelMarketData  # type: ignore[attr-defined]
             req = CancelMarketData()
             req.reqId = reqId
             self.sendProto(2, req)
@@ -832,7 +832,7 @@ class Client:
 
     def placeOrder(self, orderId, contract, order):
         if self.useProtoBuf(3):
-            from .protobuf.PlaceOrderRequest_pb2 import PlaceOrderRequest
+            from .protobuf.PlaceOrderRequest_pb2 import PlaceOrderRequest  # type: ignore[attr-defined]
             req = PlaceOrderRequest()
             req.orderId = orderId
             req.contract.CopyFrom(self._contractToProto(contract))
@@ -1066,7 +1066,7 @@ class Client:
 
     def cancelOrder(self, orderId, manualCancelOrderTime='', extOperator='', manualOrderIndicator=UNSET_INTEGER):
         if self.useProtoBuf(4):
-            from .protobuf.CancelOrderRequest_pb2 import CancelOrderRequest
+            from .protobuf.CancelOrderRequest_pb2 import CancelOrderRequest  # type: ignore[attr-defined]
             req = CancelOrderRequest()
             req.orderId = orderId
             req.orderCancel.manualOrderCancelTime = manualCancelOrderTime
@@ -1091,7 +1091,7 @@ class Client:
 
     def reqExecutions(self, reqId, execFilter):
         if self.useProtoBuf(7):
-            from .protobuf.ExecutionRequest_pb2 import ExecutionRequest
+            from .protobuf.ExecutionRequest_pb2 import ExecutionRequest  # type: ignore[attr-defined]
             req = ExecutionRequest()
             req.reqId = reqId
             req.executionFilter.clientId = execFilter.clientId
@@ -1121,7 +1121,7 @@ class Client:
 
     def reqContractDetails(self, reqId, contract):
         if self.useProtoBuf(9):
-            from .protobuf.ContractDataRequest_pb2 import ContractDataRequest
+            from .protobuf.ContractDataRequest_pb2 import ContractDataRequest  # type: ignore[attr-defined]
             req = ContractDataRequest()
             req.reqId = reqId
             req.contract.CopyFrom(self._contractToProto(contract))
