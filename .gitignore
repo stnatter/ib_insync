@@ -16,3 +16,4 @@ ib_insync.egg-info
 tests/__pycache__/*
 .DS_Store
 .claude/settings.local.json
+twsapi_macunix/
