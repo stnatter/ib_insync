@@ -593,17 +593,10 @@ class Decoder:
     def _proto_tick_price(self, payload: bytes) -> None:
         p = _pb('TickPrice')()
         p.ParseFromString(payload)
-        from .objects import TickAttrib
-        attrib = TickAttrib()
-        attrib.canAutoExecute = bool(p.attrMask & 1)
-        attrib.pastLimit = bool(p.attrMask & 2)
-        attrib.preOpen = bool(p.attrMask & 4)
-        tick_price = getattr(self.wrapper, 'tickPrice', None)
-        if tick_price:
-            tick_price(p.reqId, p.tickType, p.price, attrib)
-        size_tick = self._PRICE_TO_SIZE_TICK.get(p.tickType)
-        if size_tick is not None and p.HasField('size'):
-            self.wrapper.tickSize(p.reqId, size_tick, float(p.size) if p.size else 0.0)
+        if p.price:
+            size = float(p.size) if p.HasField('size') else 0.0
+            self.wrapper.priceSizeTick(
+                int(p.reqId), int(p.tickType), float(p.price), size)
 
     def _proto_tick_size(self, payload: bytes) -> None:
         p = _pb('TickSize')()
