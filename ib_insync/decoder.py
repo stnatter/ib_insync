@@ -54,7 +54,7 @@ def _contract_from_proto(p) -> Contract:
         leg.action = leg_p.action
         leg.exchange = leg_p.exchange
         leg.openClose = leg_p.openClose
-        leg.shortSaleSlot = leg_p.shortSaleSlot
+        leg.shortSaleSlot = leg_p.shortSalesSlot
         leg.designatedLocation = leg_p.designatedLocation
         leg.exemptCode = leg_p.exemptCode
         c.comboLegs.append(leg)
@@ -326,7 +326,7 @@ def _execution_from_proto(p) -> Execution:
     e.evMultiplier = p.evMultiplier if p.HasField('evMultiplier') else 0
     e.modelCode = p.modelCode
     e.lastLiquidity = p.lastLiquidity
-    e.pendingPriceRevision = p.pendingPriceRevision
+    e.pendingPriceRevision = p.isPriceRevisionPending if p.HasField('isPriceRevisionPending') else False
     return e
 
 

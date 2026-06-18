@@ -145,9 +145,9 @@ class Order:
     autoCancelParent: bool = False
     shareholder: str = ''
     imbalanceOnly: bool = False
-    routeMarketableToBbo: bool = False
+    routeMarketableToBbo: int = 0
     parentPermId: int = 0
-    usePriceMgmtAlgo: bool = False
+    usePriceMgmtAlgo: int = 0
     duration: int = UNSET_INTEGER
     postToAts: int = UNSET_INTEGER
     advancedErrorOverride: str = ''
