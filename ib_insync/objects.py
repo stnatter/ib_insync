@@ -1,7 +1,8 @@
 """Object hierarchy."""
 
 from dataclasses import dataclass, field
-from datetime import date as date_, datetime
+from datetime import date as date_
+from datetime import datetime
 from typing import NamedTuple
 
 from eventkit import Event
@@ -497,4 +498,3 @@ class FundamentalRatios(DynamicObject):
     https://web.archive.org/web/20200725010343/https://interactivebrokers.github.io/tws-api/fundamental_ratios_tags.html
     """
 
-    pass

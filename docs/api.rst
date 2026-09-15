@@ -56,11 +56,3 @@ FlexReport
 
 .. automodule:: ib_insync.flexreport
 
-IBC
----
-.. autoclass:: ib_insync.ibcontroller.IBC
-
-Watchdog
---------
-.. autoclass:: ib_insync.ibcontroller.Watchdog
-

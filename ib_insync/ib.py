@@ -9,18 +9,47 @@ from collections.abc import Awaitable, Iterator
 
 from eventkit import Event
 
-import ib_insync.util as util
+from ib_insync import util
 from ib_insync.client import Client
 from ib_insync.contract import Contract, ContractDescription, ContractDetails
 from ib_insync.objects import (
-    AccountValue, BarDataList, DepthMktDataDescription, Execution,
-    ExecutionFilter, Fill, HistogramData, HistoricalNews, HistoricalSchedule,
-    NewsArticle, NewsBulletin, NewsProvider, NewsTick, OptionChain,
-    OptionComputation, PnL, PnLSingle, PortfolioItem, Position, PriceIncrement,
-    RealTimeBarList, ScanDataList, ScannerSubscription, SmartComponent,
-    TagValue, TradeLogEntry, WshEventData)
+    AccountValue,
+    BarDataList,
+    DepthMktDataDescription,
+    Execution,
+    ExecutionFilter,
+    Fill,
+    HistogramData,
+    HistoricalNews,
+    HistoricalSchedule,
+    NewsArticle,
+    NewsBulletin,
+    NewsProvider,
+    NewsTick,
+    OptionChain,
+    OptionComputation,
+    PnL,
+    PnLSingle,
+    PortfolioItem,
+    Position,
+    PriceIncrement,
+    RealTimeBarList,
+    ScanDataList,
+    ScannerSubscription,
+    SmartComponent,
+    TagValue,
+    TradeLogEntry,
+    WshEventData,
+)
 from ib_insync.order import (
-    BracketOrder, LimitOrder, Order, OrderState, OrderStatus, StopOrder, Trade)
+    BracketOrder,
+    LimitOrder,
+    Order,
+    OrderState,
+    OrderStatus,
+    StopOrder,
+    Trade,
+)
 from ib_insync.ticker import Ticker
 from ib_insync.wrapper import Wrapper
 
@@ -346,7 +375,7 @@ class IB:
         if timeout:
             try:
                 util.run(asyncio.wait_for(self.updateEvent, timeout))
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 return False
         else:
             util.run(self.updateEvent)
@@ -493,8 +522,7 @@ class IB:
 
     def orders(self) -> list[Order]:
         """List of all orders from this session."""
-        return list(
-            trade.order for trade in self.wrapper.trades.values())
+        return [trade.order for trade in self.wrapper.trades.values()]
 
     def openOrders(self) -> list[Order]:
         """List of all open orders."""
@@ -507,7 +535,7 @@ class IB:
 
     def executions(self) -> list[Execution]:
         """List of all executions from this session."""
-        return list(fill.execution for fill in self.wrapper.fills.values())
+        return [fill.execution for fill in self.wrapper.fills.values()]
 
     def ticker(self, contract: Contract) -> Ticker | None:
         """
@@ -661,7 +689,7 @@ class IB:
         """
         orderId = order.orderId or self.client.getReqId()
         self.client.placeOrder(orderId, contract, order)
-        now = datetime.datetime.now(datetime.timezone.utc)
+        now = datetime.datetime.now(datetime.UTC)
         key = self.wrapper.orderKey(
             self.wrapper.clientId, orderId, order.permId)
         trade = self.wrapper.trades.get(key)
@@ -696,7 +724,7 @@ class IB:
             manualCancelOrderTime: For audit trail.
         """
         self.client.cancelOrder(order.orderId, manualCancelOrderTime)
-        now = datetime.datetime.now(datetime.timezone.utc)
+        now = datetime.datetime.now(datetime.UTC)
         key = self.wrapper.orderKey(
             order.clientId, order.orderId, order.permId)
         trade = self.wrapper.trades.get(key)
@@ -1824,7 +1852,7 @@ class IB:
             # the request for executions must come after all orders are in
             try:
                 await asyncio.wait_for(self.reqExecutionsAsync(), timeout)
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 msg = 'executions request timed out'
                 errors.append(msg)
                 self._logger.error(msg)
@@ -1986,7 +2014,7 @@ class IB:
         try:
             await asyncio.wait_for(future, 4)
             return future.result()
-        except asyncio.TimeoutError:
+        except TimeoutError:
             self._logger.error('reqMatchingSymbolsAsync: Timeout')
             return None
 
@@ -1997,7 +2025,7 @@ class IB:
             self.client.reqMarketRule(marketRuleId)
             await asyncio.wait_for(future, 1)
             return future.result()
-        except asyncio.TimeoutError:
+        except TimeoutError:
             self._logger.error('reqMarketRuleAsync: Timeout')
             return None
 
@@ -2031,7 +2059,7 @@ class IB:
         task = asyncio.wait_for(future, timeout) if timeout else future
         try:
             await task
-        except asyncio.TimeoutError:
+        except TimeoutError:
             self.client.cancelHistoricalData(reqId)
             self._logger.warning(f'reqHistoricalData: Timeout for {contract}')
             bars.clear()
@@ -2136,7 +2164,7 @@ class IB:
         try:
             await asyncio.wait_for(future, 4)
             return future.result()
-        except asyncio.TimeoutError:
+        except TimeoutError:
             self._logger.error('calculateImpliedVolatilityAsync: Timeout')
             return None
         finally:
@@ -2153,7 +2181,7 @@ class IB:
         try:
             await asyncio.wait_for(future, 4)
             return future.result()
-        except asyncio.TimeoutError:
+        except TimeoutError:
             self._logger.error('calculateOptionPriceAsync: Timeout')
             return None
         finally:
@@ -2202,7 +2230,7 @@ class IB:
         try:
             await asyncio.wait_for(future, 4)
             return future.result()
-        except asyncio.TimeoutError:
+        except TimeoutError:
             self._logger.error('reqHistoricalNewsAsync: Timeout')
             return None
 
@@ -2212,7 +2240,7 @@ class IB:
         try:
             await asyncio.wait_for(future, 4)
             return future.result()
-        except asyncio.TimeoutError:
+        except TimeoutError:
             self._logger.error('requestFAAsync: Timeout')
 
     async def getWshMetaDataAsync(self) -> str:

@@ -2,20 +2,39 @@
 
 import dataclasses
 import logging
-from datetime import datetime, timezone
-from typing import Any, cast
+from datetime import UTC, datetime
+from typing import Any, ClassVar, cast
 
 from .contract import (
-    ComboLeg, Contract, ContractDescription, ContractDetails,
-    DeltaNeutralContract)
+    ComboLeg,
+    Contract,
+    ContractDescription,
+    ContractDetails,
+    DeltaNeutralContract,
+)
 from .objects import (
-    BarData, CommissionReport, DepthMktDataDescription, Execution, FamilyCode,
-    HistogramData, HistoricalSession, HistoricalTick, HistoricalTickBidAsk,
-    HistoricalTickLast, NewsProvider, PriceIncrement, SmartComponent,
-    SoftDollarTier, TagValue, TickAttribBidAsk, TickAttribLast)
+    BarData,
+    CommissionReport,
+    DepthMktDataDescription,
+    Execution,
+    FamilyCode,
+    HistogramData,
+    HistoricalSession,
+    HistoricalTick,
+    HistoricalTickBidAsk,
+    HistoricalTickLast,
+    NewsProvider,
+    PriceIncrement,
+    SmartComponent,
+    SoftDollarTier,
+    TagValue,
+    TickAttribBidAsk,
+    TickAttribLast,
+)
 from .order import Order, OrderComboLeg, OrderCondition, OrderState
 from .util import UNSET_DOUBLE, UNSET_INTEGER, ZoneInfo, parseIBDatetime
 from .wrapper import Wrapper
+
 
 # Lazy import helpers for protobuf — only imported when a protobuf message arrives
 def _pb(name: str):
@@ -229,7 +248,7 @@ def _order_from_proto(p) -> Order:
     return o
 
 
-def _order_state_from_proto(p) -> 'OrderState':
+def _order_state_from_proto(p) -> OrderState:
     st = OrderState()
     st.status = p.status
     st.initMarginBefore = p.initMarginBefore
@@ -581,7 +600,7 @@ class Decoder:
         self.wrapper.contractDetailsEnd(p.reqId)
 
     # Mapping from price tick type to corresponding size tick type
-    _PRICE_TO_SIZE_TICK: dict[int, int] = {
+    _PRICE_TO_SIZE_TICK: ClassVar[dict[int, int]] = {
         1: 0,   # BID → BID_SIZE
         2: 3,   # ASK → ASK_SIZE
         4: 5,   # LAST → LAST_SIZE
@@ -1005,7 +1024,7 @@ class Decoder:
         p.ParseFromString(payload)
         self.wrapper.currentTime(p.currentTime)
 
-    _protoHandlers: dict[int, Any] = {
+    _protoHandlers: ClassVar[dict[int, Any]] = {
         1: _proto_tick_price,
         2: _proto_tick_size,
         3: _proto_order_status,
@@ -1377,7 +1396,7 @@ class Decoder:
             tz = self.wrapper.ib.TimezoneTWS
             if tz:
                 time = time.replace(tzinfo=ZoneInfo(str(tz)))
-        ex.time = time.astimezone(timezone.utc)
+        ex.time = time.astimezone(UTC)
         self.wrapper.execDetails(int(reqId), c, ex)
 
     def historicalData(self, fields):
@@ -1657,7 +1676,7 @@ class Decoder:
             get()
             price = float(get())
             size = float(get())
-            dt = datetime.fromtimestamp(time, timezone.utc)
+            dt = datetime.fromtimestamp(time, UTC)
             ticks.append(
                 HistoricalTick(dt, price, size))
 
@@ -1679,7 +1698,7 @@ class Decoder:
             priceAsk = float(get())
             sizeBid = float(get())
             sizeAsk = float(get())
-            dt = datetime.fromtimestamp(time, timezone.utc)
+            dt = datetime.fromtimestamp(time, UTC)
             ticks.append(
                 HistoricalTickBidAsk(
                     dt, attrib, priceBid, priceAsk, sizeBid, sizeAsk))
@@ -1702,7 +1721,7 @@ class Decoder:
             size = float(get())
             exchange = get()
             specialConditions = get()
-            dt = datetime.fromtimestamp(time, timezone.utc)
+            dt = datetime.fromtimestamp(time, UTC)
             ticks.append(
                 HistoricalTickLast(
                     dt, attrib, price, size, exchange, specialConditions))

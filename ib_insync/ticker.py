@@ -8,9 +8,16 @@ from eventkit import Event, Op
 
 from ib_insync.contract import Contract
 from ib_insync.objects import (
-    DOMLevel, Dividends, FundamentalRatios, MktDepthData,
-    OptionComputation, TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint,
-    TickData)
+    Dividends,
+    DOMLevel,
+    FundamentalRatios,
+    MktDepthData,
+    OptionComputation,
+    TickByTickAllLast,
+    TickByTickBidAsk,
+    TickByTickMidPoint,
+    TickData,
+)
 from ib_insync.util import dataclassRepr, isNan
 
 nan = float('nan')
@@ -159,23 +166,23 @@ class Ticker:
 class TickerUpdateEvent(Event):
     __slots__ = ()
 
-    def trades(self) -> "Tickfilter":
+    def trades(self) -> Tickfilter:
         """Emit trade ticks."""
         return Tickfilter((4, 5, 48, 68, 71), self)
 
-    def bids(self) -> "Tickfilter":
+    def bids(self) -> Tickfilter:
         """Emit bid ticks."""
         return Tickfilter((0, 1, 66, 69), self)
 
-    def asks(self) -> "Tickfilter":
+    def asks(self) -> Tickfilter:
         """Emit ask ticks."""
         return Tickfilter((2, 3, 67, 70), self)
 
-    def bidasks(self) -> "Tickfilter":
+    def bidasks(self) -> Tickfilter:
         """Emit bid and ask ticks."""
         return Tickfilter((0, 1, 66, 69, 2, 3, 67, 70), self)
 
-    def midpoints(self) -> "Tickfilter":
+    def midpoints(self) -> Tickfilter:
         """Emit midpoint ticks."""
         return Midpoints((), self)
 
@@ -194,7 +201,7 @@ class Tickfilter(Op):
             if t.tickType in self._tickTypes:
                 self.emit(t.time, t.price, t.size)
 
-    def timebars(self, timer: Event) -> "TimeBars":
+    def timebars(self, timer: Event) -> TimeBars:
         """
         Aggregate ticks into time bars, where the timing of new bars
         is derived from a timer event.
@@ -208,7 +215,7 @@ class Tickfilter(Op):
         """
         return TimeBars(timer, self)
 
-    def tickbars(self, count: int) -> "TickBars":
+    def tickbars(self, count: int) -> TickBars:
         """
         Aggregate ticks into bars that have the same number of ticks.
         Emits a completed :class:`Bar`.
@@ -221,7 +228,7 @@ class Tickfilter(Op):
         """
         return TickBars(count, self)
 
-    def volumebars(self, volume: int) -> "VolumeBars":
+    def volumebars(self, volume: int) -> VolumeBars:
         """
         Aggregate ticks into bars that have the same volume.
         Emits a completed :class:`Bar`.

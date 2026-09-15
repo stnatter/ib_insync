@@ -4,28 +4,72 @@ import asyncio
 import logging
 from collections import defaultdict
 from contextlib import suppress
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
+from eventkit import Event
+
 from ib_insync.contract import (
-    Contract, ContractDescription, ContractDetails, DeltaNeutralContract,
-    ScanData)
+    Contract,
+    ContractDescription,
+    ContractDetails,
+    DeltaNeutralContract,
+    ScanData,
+)
 from ib_insync.objects import (
-    AccountValue, BarData, BarDataList, CommissionReport, DOMLevel,
-    DepthMktDataDescription, Dividends, Execution, FamilyCode, Fill,
-    FundamentalRatios, HistogramData, HistoricalNews, HistoricalSchedule,
-    HistoricalSession, HistoricalTick, HistoricalTickBidAsk,
-    HistoricalTickLast, MktDepthData, NewsArticle, NewsBulletin, NewsProvider,
-    NewsTick, OptionChain, OptionComputation, PnL, PnLSingle, PortfolioItem,
-    Position, PriceIncrement, RealTimeBar, RealTimeBarList, SoftDollarTier,
-    TickAttribBidAsk, TickAttribLast, TickByTickAllLast, TickByTickBidAsk,
-    TickByTickMidPoint, TickData, TradeLogEntry)
+    AccountValue,
+    BarData,
+    BarDataList,
+    CommissionReport,
+    DepthMktDataDescription,
+    Dividends,
+    DOMLevel,
+    Execution,
+    FamilyCode,
+    Fill,
+    FundamentalRatios,
+    HistogramData,
+    HistoricalNews,
+    HistoricalSchedule,
+    HistoricalSession,
+    HistoricalTick,
+    HistoricalTickBidAsk,
+    HistoricalTickLast,
+    MktDepthData,
+    NewsArticle,
+    NewsBulletin,
+    NewsProvider,
+    NewsTick,
+    OptionChain,
+    OptionComputation,
+    PnL,
+    PnLSingle,
+    PortfolioItem,
+    Position,
+    PriceIncrement,
+    RealTimeBar,
+    RealTimeBarList,
+    SoftDollarTier,
+    TickAttribBidAsk,
+    TickAttribLast,
+    TickByTickAllLast,
+    TickByTickBidAsk,
+    TickByTickMidPoint,
+    TickData,
+    TradeLogEntry,
+)
 from ib_insync.order import Order, OrderState, OrderStatus, Trade
 from ib_insync.ticker import Ticker
-from eventkit import Event
 from ib_insync.util import (
-    UNSET_DOUBLE, UNSET_INTEGER, dataclassAsDict, dataclassUpdate,
-    getLoop, globalErrorEvent, isNan, parseIBDatetime)
+    UNSET_DOUBLE,
+    UNSET_INTEGER,
+    dataclassAsDict,
+    dataclassUpdate,
+    getLoop,
+    globalErrorEvent,
+    isNan,
+    parseIBDatetime,
+)
 
 if TYPE_CHECKING:
     from ib_insync.ib import IB
@@ -56,7 +100,7 @@ class RequestError(Exception):
 class Wrapper:
     """Wrapper implementation for use with the IB class."""
 
-    ib: 'IB'
+    ib: IB
 
     accountValues: dict[tuple, AccountValue]
     """ (account, tag, currency, modelCode) -> AccountValue """
@@ -129,7 +173,7 @@ class Wrapper:
     _logger: logging.Logger
     _timeoutHandle: asyncio.TimerHandle | None
 
-    def __init__(self, ib: 'IB'):
+    def __init__(self, ib: IB):
         self.ib = ib
         self._logger = logging.getLogger('ib_insync.wrapper')
         self._timeoutHandle = None
@@ -256,7 +300,7 @@ class Wrapper:
         return key
 
     def setTimeout(self, timeout: float):
-        self.lastTime = datetime.now(timezone.utc)
+        self.lastTime = datetime.now(UTC)
         if self._timeoutHandle:
             self._timeoutHandle.cancel()
         self._timeoutHandle = None
@@ -267,7 +311,7 @@ class Wrapper:
     def _setTimer(self, delay: float = 0):
         if self.lastTime == datetime.min:
             return
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         diff = (now - self.lastTime).total_seconds()
         if not delay:
             delay = self._timeout - diff
@@ -470,12 +514,12 @@ class Wrapper:
         if trade:
             msg: str | None
             oldStatus = trade.orderStatus.status
-            new = dict(
-                status=status, filled=filled,
-                remaining=remaining, avgFillPrice=avgFillPrice,
-                permId=permId, parentId=parentId,
-                lastFillPrice=lastFillPrice, clientId=clientId,
-                whyHeld=whyHeld, mktCapPrice=mktCapPrice)
+            new = {
+                'status': status, 'filled': filled,
+                'remaining': remaining, 'avgFillPrice': avgFillPrice,
+                'permId': permId, 'parentId': parentId,
+                'lastFillPrice': lastFillPrice, 'clientId': clientId,
+                'whyHeld': whyHeld, 'mktCapPrice': mktCapPrice}
             curr = dataclassAsDict(trade.orderStatus)
             isChanged = curr != {**curr, **new}
             if isChanged:
@@ -595,7 +639,7 @@ class Wrapper:
     def realtimeBar(
             self, reqId: int, time: int, open_: float, high: float, low: float,
             close: float, volume: float, wap: float, count: int):
-        dt = datetime.fromtimestamp(time, timezone.utc)
+        dt = datetime.fromtimestamp(time, UTC)
         bar = RealTimeBar(dt, -1, open_, high, low, close, volume, wap, count)
         bars = self.reqId2Subscriber.get(reqId)
         if bars is not None:
@@ -879,7 +923,7 @@ class Wrapper:
                     ticker.vwap = float(vwap)
                 if rtTime:
                     ticker.rtTime = datetime.fromtimestamp(
-                        int(rtTime) / 1000, timezone.utc)
+                        int(rtTime) / 1000, UTC)
                 if priceStr == '':
                     return
                 price = float(priceStr)
@@ -973,11 +1017,10 @@ class Wrapper:
             dom.insert(position, DOMLevel(price, size, marketMaker))
         elif operation == 1:
             dom[position] = DOMLevel(price, size, marketMaker)
-        elif operation == 2:
-            if position < len(dom):
-                level = dom.pop(position)
-                price = level.price
-                size = 0
+        elif operation == 2 and position < len(dom):
+            level = dom.pop(position)
+            price = level.price
+            size = 0
 
         tick = MktDepthData(
             self.lastTime, position, marketMaker, operation, side, price, size)
@@ -995,8 +1038,8 @@ class Wrapper:
             optPrice if optPrice != -1 else None,
             pvDividend if pvDividend != -1 else None,
             gamma if gamma != -2 else None,
-            vega if vega != -2 else vega,
-            theta if theta != -2 else theta,
+            vega if vega != -2 else None,
+            theta if theta != -2 else None,
             undPrice if undPrice != -1 else None)
         ticker = self.reqId2Ticker.get(reqId)
         if ticker:
@@ -1108,7 +1151,7 @@ class Wrapper:
         self._endReq('requestFA', faXmlData)
 
     def currentTime(self, time: int):
-        dt = datetime.fromtimestamp(time, timezone.utc)
+        dt = datetime.fromtimestamp(time, UTC)
         self._endReq('currentTime', dt)
 
     def tickEFP(
@@ -1231,7 +1274,7 @@ class Wrapper:
         self.ib.errorEvent.emit(reqId, errorCode, errorString, contract)
 
     def tcpDataArrived(self):
-        self.lastTime = datetime.now(timezone.utc)
+        self.lastTime = datetime.now(UTC)
         for ticker in self.pendingTickers:
             ticker.ticks = []
             ticker.tickByTicks = []

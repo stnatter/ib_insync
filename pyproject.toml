@@ -21,6 +21,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "Topic :: Office/Business :: Financial :: Investment",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Programming Language :: Python :: 3 :: Only",
 ]
 dependencies = [
@@ -34,7 +35,6 @@ dev = [
     "pytest-asyncio",
     "ruff",
     "mypy",
-    "types-dataclasses",
 ]
 
 [project.urls]
@@ -64,10 +64,23 @@ follow_imports = "skip"
 
 [tool.ruff]
 line-length = 88
-extend-exclude = ["notebooks", "examples"]
+extend-exclude = ["notebooks", "examples", "ib_insync/protobuf"]
 
 [tool.ruff.lint]
-ignore = ["D101", "D102", "D105", "D107", "D205", "D400", "D401", "E203"]
+ignore = [
+    "B006",  # mutable arg defaults are never mutated and kept for API stability
+    "D101",
+    "D102",
+    "D105",
+    "D107",
+    "D205",
+    "D400",
+    "D401",
+    "DTZ007",  # naive datetimes are intentional (IB date/time format)
+    "DTZ011",
+    "DTZ901",
+    "E203",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

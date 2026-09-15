@@ -4,7 +4,7 @@ import datetime as dt
 from dataclasses import dataclass, field
 from typing import NamedTuple
 
-import ib_insync.util as util
+from ib_insync import util
 
 
 @dataclass
@@ -100,12 +100,12 @@ class Contract:
     description: str = ''
     issuerId: str = ''
     comboLegsDescrip: str = ''
-    comboLegs: list['ComboLeg'] = field(default_factory=list)
-    deltaNeutralContract: 'DeltaNeutralContract | None' = None
+    comboLegs: list[ComboLeg] = field(default_factory=list)
+    deltaNeutralContract: DeltaNeutralContract | None = None
     lastTradeDate: str = ''
 
     @staticmethod
-    def create(**kwargs) -> 'Contract':
+    def create(**kwargs) -> Contract:
         """
         Create and a return a specialized contract based on the given secType,
         or a general Contract if secType is not given.

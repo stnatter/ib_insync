@@ -112,7 +112,7 @@ class Order:
     notHeld: bool = False
     solicited: bool = False
     modelCode: str = ''
-    orderComboLegs: list['OrderComboLeg'] = field(default_factory=list)
+    orderComboLegs: list[OrderComboLeg] = field(default_factory=list)
     orderMiscOptions: list[TagValue] = field(default_factory=list)
     referenceContractId: int = 0
     peggedChangeAmount: float = 0.0
@@ -126,7 +126,7 @@ class Order:
     adjustedTrailingAmount: float = UNSET_DOUBLE
     adjustableTrailingUnit: int = 0
     lmtPriceOffset: float = UNSET_DOUBLE
-    conditions: list['OrderCondition'] = field(default_factory=list)
+    conditions: list[OrderCondition] = field(default_factory=list)
     conditionsCancelOrder: bool = False
     conditionsIgnoreRth: bool = False
     extOperator: str = ''
@@ -301,7 +301,7 @@ class Trade:
 
     contract: Contract = field(default_factory=Contract)
     order: Order = field(default_factory=Order)
-    orderStatus: 'OrderStatus' = field(default_factory=OrderStatus)
+    orderStatus: OrderStatus = field(default_factory=OrderStatus)
     fills: list[Fill] = field(default_factory=list)
     log: list[TradeLogEntry] = field(default_factory=list)
     advancedError: str = ''

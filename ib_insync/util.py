@@ -7,19 +7,18 @@ import math
 import signal
 import sys
 import time
-from dataclasses import fields, is_dataclass
 from collections.abc import AsyncIterator, Awaitable, Callable, Iterator
+from dataclasses import fields, is_dataclass
 from zoneinfo import ZoneInfo
 
 import eventkit as ev
-
 
 globalErrorEvent = ev.Event()
 """
 Event to emit global exceptions.
 """
 
-EPOCH = dt.datetime(1970, 1, 1, tzinfo=dt.timezone.utc)
+EPOCH = dt.datetime(1970, 1, 1, tzinfo=dt.UTC)
 UNSET_INTEGER = 2 ** 31 - 1
 UNSET_DOUBLE = sys.float_info.max
 
@@ -33,8 +32,9 @@ def df(objs, labels: list[str] | None = None):
     Args:
       labels: If supplied, retain only the given labels and drop the rest.
     """
-    from .objects import DynamicObject
     import pandas as pd
+
+    from .objects import DynamicObject
     if objs:
         objs = list(objs)
         obj = objs[0]
@@ -89,7 +89,7 @@ def dataclassNonDefaults(obj) -> dict:
     return {
         field.name: value for field, value in zip(fields(obj), values)
         if value != field.default
-        and value == value
+        and value == value  # noqa: PLR0124
         and not (isinstance(value, list) and value == [])}
 
 
@@ -158,8 +158,8 @@ def barplot(bars, title='', upColor='blue', downColor='red'):
     Create candlestick plot for the given bars. The bars can be given as
     a DataFrame or as a list of bar objects.
     """
-    import pandas as pd
     import matplotlib.pyplot as plt
+    import pandas as pd
     from matplotlib.lines import Line2D
     from matplotlib.patches import Rectangle
 
@@ -250,7 +250,7 @@ def logToConsole(level=logging.INFO):
 
 def isNan(x: float) -> bool:
     """Not a number test."""
-    return x != x
+    return x != x  # noqa: PLR0124
 
 
 def formatSI(n: float) -> str:
@@ -265,10 +265,10 @@ def formatSI(n: float) -> str:
         s = '0.00 '
     else:
         assert n < 9.99e26
-        log = int(math.floor(math.log10(n)))
+        log = math.floor(math.log10(n))
         i, j = divmod(log, 3)
         for _try in range(2):
-            templ = '%.{}f'.format(2 - j)
+            templ = f'%.{2 - j}f'
             val = templ % (n * 10 ** (-3 * i))
             if val != '1000':
                 break
@@ -398,7 +398,7 @@ def timeRange(start: Time_t, end: Time_t, step: float) \
     assert step > 0
     delta = dt.timedelta(seconds=step)
     t = _fillDate(start)
-    tz = dt.timezone.utc if t.tzinfo else None
+    tz = dt.UTC if t.tzinfo else None
     now = dt.datetime.now(tz)
     while t < now:
         t += delta
@@ -430,7 +430,7 @@ async def timeRangeAsync(
     assert step > 0
     delta = dt.timedelta(seconds=step)
     t = _fillDate(start)
-    tz = dt.timezone.utc if t.tzinfo else None
+    tz = dt.UTC if t.tzinfo else None
     now = dt.datetime.now(tz)
     while t < now:
         t += delta
@@ -504,11 +504,11 @@ def formatIBDatetime(t: dt.date | dt.datetime | str | None) -> str:
         s = ''
     elif isinstance(t, dt.datetime):
         # convert to UTC timezone
-        t = t.astimezone(tz=dt.timezone.utc)
+        t = t.astimezone(tz=dt.UTC)
         s = t.strftime('%Y%m%d %H:%M:%S UTC')
     elif isinstance(t, dt.date):
         t = dt.datetime(
-            t.year, t.month, t.day, 23, 59, 59).astimezone(tz=dt.timezone.utc)
+            t.year, t.month, t.day, 23, 59, 59).astimezone(tz=dt.UTC)
         s = t.strftime('%Y%m%d %H:%M:%S UTC')
     else:
         s = t
@@ -524,7 +524,7 @@ def parseIBDatetime(s: str) -> dt.date | dt.datetime:
         d = int(s[6:8])
         t = dt.date(y, m, d)
     elif s.isdigit():
-        t = dt.datetime.fromtimestamp(int(s), dt.timezone.utc)
+        t = dt.datetime.fromtimestamp(int(s), dt.UTC)
     elif s.count(' ') >= 2 and '  ' not in s:
         # 20221125 10:00:00 Europe/Amsterdam
         s0, s1, s2 = s.split(' ', 2)
