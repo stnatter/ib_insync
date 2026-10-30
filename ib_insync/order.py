@@ -297,6 +297,12 @@ class Trade:
         * ``filledEvent`` (trade: :class:`.Trade`)
         * ``cancelEvent`` (trade: :class:`.Trade`)
         * ``cancelledEvent`` (trade: :class:`.Trade`)
+        * ``modifyVerdictEvent`` (trade: :class:`.Trade`, kind: str,
+          errorCode: int, errorString: str)
+          Emitted when the broker answers an order modification:
+          ``('ack', 0, '')`` on acceptance (the orderStatus refresh following
+          the modify) or ``('rej', <code>, <msg>)`` on rejection (error
+          202/399). The order itself stays live on rejection.
     """
 
     contract: Contract = field(default_factory=Contract)
@@ -309,7 +315,7 @@ class Trade:
     events: ClassVar = (
         'statusEvent', 'modifyEvent', 'fillEvent',
         'commissionReportEvent', 'filledEvent',
-        'cancelEvent', 'cancelledEvent')
+        'cancelEvent', 'cancelledEvent', 'modifyVerdictEvent')
 
     def __post_init__(self):
         self.statusEvent = Event('statusEvent')
@@ -319,6 +325,7 @@ class Trade:
         self.filledEvent = Event('filledEvent')
         self.cancelEvent = Event('cancelEvent')
         self.cancelledEvent = Event('cancelledEvent')
+        self.modifyVerdictEvent = Event('modifyVerdictEvent')
 
     def isActive(self) -> bool:
         """True if eligible for execution, false otherwise."""

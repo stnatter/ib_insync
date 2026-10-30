@@ -533,11 +533,16 @@ class Wrapper:
                 msg = None
 
             if msg is not None:
+                was_modify = bool(trade.log) and trade.log[-1].message == 'Modify'
                 logEntry = TradeLogEntry(self.lastTime, status, msg)
                 trade.log.append(logEntry)
                 self._logger.info(f'orderStatus: {trade}')
                 self.ib.orderStatusEvent.emit(trade)
                 trade.statusEvent.emit(trade)
+                if was_modify:
+                    # An orderStatus refresh following a modify is the broker's
+                    # acknowledgment that the modification was accepted.
+                    trade.modifyVerdictEvent.emit(trade, 'ack', 0, '')
                 if status != oldStatus:
                     if status == OrderStatus.Filled:
                         trade.filledEvent.emit(trade)
@@ -1210,6 +1215,16 @@ class Wrapper:
 
         if isWarning:
             self._logger.info(msg)
+            if (
+                trade
+                and errorCode in {202, 399}
+                and trade.log
+                and trade.log[-1].message == 'Modify'
+            ):
+                # 202/399 on a just-modified order means the modification was
+                # rejected; the order itself stays live. The verdict event
+                # lets consumers distinguish rejection from acknowledgment.
+                trade.modifyVerdictEvent.emit(trade, 'rej', errorCode, errorString)
         else:
             self._logger.error(msg)
             if isRequest:
